@@ -1,0 +1,28 @@
+[1.109s] Invoking command in '/home/nabhan/try_12/src/k12_pick_place': AMENT_PREFIX_PATH=/home/nabhan/try_12/install/articubot_one:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/nabhan/try_12/install/articubot_one:${CMAKE_PREFIX_PATH} PYTHONPATH=/home/nabhan/try_12/build/k12_pick_place/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../../build/k12_pick_place build --build-base /home/nabhan/try_12/build/k12_pick_place/build install --record /home/nabhan/try_12/build/k12_pick_place/install.log --install-scripts $base/lib/k12_pick_place --single-version-externally-managed install_data
+[1.537s] running egg_info
+[1.539s] writing ../../../build/k12_pick_place/k12_pick_place.egg-info/PKG-INFO
+[1.539s] writing dependency_links to ../../../build/k12_pick_place/k12_pick_place.egg-info/dependency_links.txt
+[1.540s] writing entry points to ../../../build/k12_pick_place/k12_pick_place.egg-info/entry_points.txt
+[1.540s] writing requirements to ../../../build/k12_pick_place/k12_pick_place.egg-info/requires.txt
+[1.540s] writing top-level names to ../../../build/k12_pick_place/k12_pick_place.egg-info/top_level.txt
+[1.546s] reading manifest file '../../../build/k12_pick_place/k12_pick_place.egg-info/SOURCES.txt'
+[1.549s] writing manifest file '../../../build/k12_pick_place/k12_pick_place.egg-info/SOURCES.txt'
+[1.549s] running build
+[1.549s] running build_py
+[1.556s] running install
+[1.556s] running install_lib
+[1.557s] running install_data
+[1.557s] copying config/amms_waypoints.yaml -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/config
+[1.561s] running install_egg_info
+[1.562s] removing '/home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place-0.1.0-py3.10.egg-info' (and everything under it)
+[1.562s] Copying ../../../build/k12_pick_place/k12_pick_place.egg-info to /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place-0.1.0-py3.10.egg-info
+[1.563s] running install_scripts
+[1.597s] Installing amms_task_manager script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[1.597s] Installing cloud_to_scan script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[1.597s] Installing object_detector script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[1.597s] Installing pick_place_commander script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[1.600s] Installing readiness_gate script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[1.602s] Installing scene_spawner script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[1.602s] Installing waypoint_manager script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[1.602s] writing list of installed files to '/home/nabhan/try_12/build/k12_pick_place/install.log'
+[1.674s] Invoked command in '/home/nabhan/try_12/src/k12_pick_place' returned '0': AMENT_PREFIX_PATH=/home/nabhan/try_12/install/articubot_one:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/nabhan/try_12/install/articubot_one:${CMAKE_PREFIX_PATH} PYTHONPATH=/home/nabhan/try_12/build/k12_pick_place/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../../build/k12_pick_place build --build-base /home/nabhan/try_12/build/k12_pick_place/build install --record /home/nabhan/try_12/build/k12_pick_place/install.log --install-scripts $base/lib/k12_pick_place --single-version-externally-managed install_data

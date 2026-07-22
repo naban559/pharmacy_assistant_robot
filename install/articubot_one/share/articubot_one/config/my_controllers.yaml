@@ -1,0 +1,110 @@
+# =============================================================================
+# my_controllers.yaml — ros2_control controller configuration
+# articubot_one — 4-wheel skid-steer robot
+#
+# FIXES APPLIED:
+#   Bug #2 — wheel_separation was 0.40 m (completely wrong).
+#             Physical measurement from URDF joint origins:
+#             left  wheel Y offset = +0.09 m
+#             right wheel Y offset = -0.09 m
+#             separation = 0.09 − (−0.09) = 0.18 m
+#             Correct value: 0.18 m
+#
+#   enable_odom_tf = false:
+#             EKF (robot_localization) publishes odom→base_footprint.
+#             Letting diff_drive_controller also publish it creates a
+#             duplicate TF parent conflict and odometry drift.
+# =============================================================================
+
+controller_manager:
+  ros__parameters:
+    update_rate: 100
+    use_sim_time: true
+
+    diff_cont:
+      type: diff_drive_controller/DiffDriveController
+
+    joint_broad:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    # ADDED: arm + gripper controllers, loaded by the same controller_manager
+    # as the wheels (Ignition only starts one controller_manager per model —
+    # see the note in description/arm_ros2_control.xacro). Names match the
+    # k12_pick_place defaults (arm_position_controller, gripper_position_controller)
+    # so no config changes are needed on the pick_place_commander side.
+    arm_position_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    gripper_position_controller:
+      type: forward_command_controller/ForwardCommandController
+
+
+diff_cont:
+  ros__parameters:
+
+    publish_rate: 50.0
+
+    # TF / Odometry frames
+    odom_frame_id:  odom
+    base_frame_id:  base_footprint
+
+    # Wheel joints — 4-wheel skid-steer: front+rear share left/right side
+    left_wheel_names:
+      - left_front_wheel_joint
+      - left_rear_wheel_joint
+    right_wheel_names:
+      - right_front_wheel_joint
+      - right_rear_wheel_joint
+
+    # FIX Bug #2: wheel_separation corrected from 0.40 m → 0.18 m
+    # From URDF: |Y_left − Y_right| = |0.135 − (−0.135)| = 0.27 m
+    wheel_separation: 0.27
+
+    # Wheel radius from URDF cylinder collision = 0.06 m
+    wheel_radius: 0.06
+
+    # Accept unstamped Twist (from twist_mux)
+    use_stamped_vel: false
+
+    # EKF publishes the odom→base_footprint TF — do not duplicate it here
+    enable_odom_tf: false
+
+    pose_covariance_diagonal:  [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
+    twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
+
+# JointStateBroadcaster — publishes all joints on /joint_states (defaults ok)
+
+
+# ADDED: arm_position_controller — publishes/accepts trajectories on
+# /arm_position_controller/joint_trajectory and the action
+# /arm_position_controller/follow_joint_trajectory, matching
+# k12_pick_place's arm_controller_topic / arm_action_name defaults.
+arm_position_controller:
+  ros__parameters:
+    joints:
+      - arm_base_yaw_joint
+      - arm_shoulder_pitch_joint
+      - arm_elbow_pitch_joint
+      - arm_wrist_pitch_joint
+      - arm_wrist_roll_joint
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    allow_partial_joints_goal: true
+    action_monitor_rate: 20.0
+    constraints:
+      stopped_velocity_tolerance: 0.05
+      goal_time: 5.0
+
+# ADDED: gripper_position_controller — accepts Float64MultiArray on
+# /gripper_position_controller/commands, matching k12_pick_place's
+# gripper_controller_topic default. Order is [left_gripper_joint,
+# right_gripper_joint].
+gripper_position_controller:
+  ros__parameters:
+    joints:
+      - left_gripper_joint
+      - right_gripper_joint
+    interface_name: position

@@ -1,0 +1,30 @@
+[0.612s] Invoking command in '/home/nabhan/try_12/src/k12_pick_place': AMENT_PREFIX_PATH=/home/nabhan/try_12/install/articubot_one:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/nabhan/try_12/install/articubot_one:${CMAKE_PREFIX_PATH} PYTHONPATH=/home/nabhan/try_12/build/k12_pick_place/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../../build/k12_pick_place build --build-base /home/nabhan/try_12/build/k12_pick_place/build install --record /home/nabhan/try_12/build/k12_pick_place/install.log --install-scripts $base/lib/k12_pick_place --single-version-externally-managed install_data
+[0.837s] running egg_info
+[0.838s] writing ../../../build/k12_pick_place/k12_pick_place.egg-info/PKG-INFO
+[0.838s] writing dependency_links to ../../../build/k12_pick_place/k12_pick_place.egg-info/dependency_links.txt
+[0.838s] writing entry points to ../../../build/k12_pick_place/k12_pick_place.egg-info/entry_points.txt
+[0.838s] writing requirements to ../../../build/k12_pick_place/k12_pick_place.egg-info/requires.txt
+[0.838s] writing top-level names to ../../../build/k12_pick_place/k12_pick_place.egg-info/top_level.txt
+[0.840s] reading manifest file '../../../build/k12_pick_place/k12_pick_place.egg-info/SOURCES.txt'
+[0.842s] writing manifest file '../../../build/k12_pick_place/k12_pick_place.egg-info/SOURCES.txt'
+[0.842s] running build
+[0.842s] running build_py
+[0.842s] running install
+[0.842s] running install_lib
+[0.844s] running install_data
+[0.844s] copying config/pick_place_standalone.yaml -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/config
+[0.844s] copying config/pick_place_service.yaml -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/config
+[0.844s] copying config/pick_place.yaml -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/config
+[0.845s] running install_egg_info
+[0.846s] removing '/home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place-0.1.0-py3.10.egg-info' (and everything under it)
+[0.846s] Copying ../../../build/k12_pick_place/k12_pick_place.egg-info to /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place-0.1.0-py3.10.egg-info
+[0.847s] running install_scripts
+[0.869s] Installing amms_task_manager script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[0.869s] Installing cloud_to_scan script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[0.869s] Installing object_detector script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[0.869s] Installing pick_place_commander script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[0.869s] Installing readiness_gate script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[0.870s] Installing scene_spawner script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[0.870s] Installing waypoint_manager script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[0.870s] writing list of installed files to '/home/nabhan/try_12/build/k12_pick_place/install.log'
+[0.899s] Invoked command in '/home/nabhan/try_12/src/k12_pick_place' returned '0': AMENT_PREFIX_PATH=/home/nabhan/try_12/install/articubot_one:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/nabhan/try_12/install/articubot_one:${CMAKE_PREFIX_PATH} PYTHONPATH=/home/nabhan/try_12/build/k12_pick_place/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../../build/k12_pick_place build --build-base /home/nabhan/try_12/build/k12_pick_place/build install --record /home/nabhan/try_12/build/k12_pick_place/install.log --install-scripts $base/lib/k12_pick_place --single-version-externally-managed install_data

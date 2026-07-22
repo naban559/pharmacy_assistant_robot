@@ -1,0 +1,5 @@
+pkill -9 -f ros2
+pkill -9 -f ign
+pkill -9 -f gzserver
+sleep 2
+ps aux | grep -iE "ros2|ign|gz" | grep -v grep

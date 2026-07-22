@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<robot name="k12_arm_gazebo" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="k12_arm_gazebo">
+    <gazebo reference="arm_base_link">
+      <material>Gazebo/Silver</material>
+      <mu1>0.6</mu1>
+      <mu2>0.6</mu2>
+      <self_collide>false</self_collide>
+    </gazebo>
+
+    <gazebo reference="link1">
+      <material>Gazebo/Silver</material>
+      <mu1>0.6</mu1>
+      <mu2>0.6</mu2>
+      <self_collide>false</self_collide>
+    </gazebo>
+
+    <gazebo reference="link2">
+      <material>Gazebo/Silver</material>
+      <mu1>0.6</mu1>
+      <mu2>0.6</mu2>
+      <self_collide>false</self_collide>
+    </gazebo>
+
+    <gazebo reference="link3">
+      <material>Gazebo/Silver</material>
+      <mu1>0.6</mu1>
+      <mu2>0.6</mu2>
+      <self_collide>false</self_collide>
+    </gazebo>
+
+    <gazebo reference="link4">
+      <material>Gazebo/Silver</material>
+      <mu1>0.6</mu1>
+      <mu2>0.6</mu2>
+      <self_collide>false</self_collide>
+    </gazebo>
+
+    <gazebo reference="link5">
+      <material>Gazebo/Silver</material>
+      <mu1>0.6</mu1>
+      <mu2>0.6</mu2>
+      <self_collide>false</self_collide>
+    </gazebo>
+
+    <gazebo reference="end_effector">
+      <material>Gazebo/Grey</material>
+      <mu1>0.8</mu1>
+      <mu2>0.8</mu2>
+      <self_collide>false</self_collide>
+    </gazebo>
+
+    <gazebo reference="left_gripper">
+      <material>Gazebo/DarkGrey</material>
+      <mu1>3.0</mu1>
+      <mu2>3.0</mu2>
+      <self_collide>false</self_collide>
+    </gazebo>
+
+    <gazebo reference="right_gripper">
+      <material>Gazebo/DarkGrey</material>
+      <mu1>3.0</mu1>
+      <mu2>3.0</mu2>
+      <self_collide>false</self_collide>
+    </gazebo>
+  </xacro:macro>
+</robot>

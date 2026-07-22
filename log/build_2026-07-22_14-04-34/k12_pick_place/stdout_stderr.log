@@ -1,0 +1,26 @@
+running egg_info
+writing ../../../build/k12_pick_place/k12_pick_place.egg-info/PKG-INFO
+writing dependency_links to ../../../build/k12_pick_place/k12_pick_place.egg-info/dependency_links.txt
+writing entry points to ../../../build/k12_pick_place/k12_pick_place.egg-info/entry_points.txt
+writing requirements to ../../../build/k12_pick_place/k12_pick_place.egg-info/requires.txt
+writing top-level names to ../../../build/k12_pick_place/k12_pick_place.egg-info/top_level.txt
+reading manifest file '../../../build/k12_pick_place/k12_pick_place.egg-info/SOURCES.txt'
+writing manifest file '../../../build/k12_pick_place/k12_pick_place.egg-info/SOURCES.txt'
+running build
+running build_py
+running install
+running install_lib
+running install_data
+copying config/amms_waypoints.yaml -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/config
+running install_egg_info
+removing '/home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place-0.1.0-py3.10.egg-info' (and everything under it)
+Copying ../../../build/k12_pick_place/k12_pick_place.egg-info to /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place-0.1.0-py3.10.egg-info
+running install_scripts
+Installing amms_task_manager script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+Installing cloud_to_scan script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+Installing object_detector script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+Installing pick_place_commander script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+Installing readiness_gate script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+Installing scene_spawner script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+Installing waypoint_manager script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+writing list of installed files to '/home/nabhan/try_12/build/k12_pick_place/install.log'

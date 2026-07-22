@@ -1,0 +1,63 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="k12_test_block">
+    <static>false</static>
+    <link name="link">
+      <inertial>
+        <mass>0.22</mass>
+        <inertia>
+          <ixx>0.000062</ixx>
+          <iyy>0.000123</iyy>
+          <izz>0.000130</izz>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <velocity_decay>
+        <linear>0.7</linear>
+        <angular>1.4</angular>
+      </velocity_decay>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.075 0.045 0.055</size>
+          </box>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>3.0</mu>
+              <mu2>3.0</mu2>
+              <friction_model>pyramid_model</friction_model>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <kp>5000</kp>
+              <kd>20</kd>
+              <max_vel>0.1</max_vel>
+              <min_depth>0.0005</min_depth>
+            </ode>
+          </contact>
+          <bounce>
+            <restitution_coefficient>0.0</restitution_coefficient>
+            <threshold>100000</threshold>
+          </bounce>
+        </surface>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.075 0.045 0.055</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.05 0.20 0.95 1</ambient>
+          <diffuse>0.05 0.20 0.95 1</diffuse>
+          <specular>0.02 0.04 0.10 1</specular>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

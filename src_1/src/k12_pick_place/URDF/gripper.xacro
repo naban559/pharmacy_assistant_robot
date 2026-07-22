@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<robot name="k12_gripper" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="k12_box_inertial" params="mass x y z ox:=0 oy:=0 oz:=0">
+    <inertial>
+      <origin xyz="${ox} ${oy} ${oz}" rpy="0 0 0"/>
+      <mass value="${mass}"/>
+      <inertia
+        ixx="${mass * (y*y + z*z) / 12.0}"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="${mass * (x*x + z*z) / 12.0}"
+        iyz="0.0"
+        izz="${mass * (x*x + y*y) / 12.0}"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="parallel_gripper" params="
+    parent
+    palm_length
+    palm_width
+    palm_height
+    palm_mass
+    finger_length
+    finger_width
+    finger_height
+    finger_mass
+    finger_travel
+    finger_gap">
+
+    <link name="end_effector">
+      <visual>
+        <origin xyz="${palm_length / 2.0} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${palm_length} ${palm_width} ${palm_height}"/>
+        </geometry>
+        <material name="silver"/>
+      </visual>
+      <collision>
+        <origin xyz="${palm_length / 2.0} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${palm_length} ${palm_width} ${palm_height}"/>
+        </geometry>
+      </collision>
+      <xacro:k12_box_inertial
+        mass="${palm_mass}"
+        x="${palm_length}"
+        y="${palm_width}"
+        z="${palm_height}"
+        ox="${palm_length / 2.0}"/>
+    </link>
+
+    <joint name="end_effector_joint" type="fixed">
+      <origin xyz="${k12_arm_roll_length} 0 0" rpy="0 0 0"/>
+      <parent link="${parent}"/>
+      <child link="end_effector"/>
+    </joint>
+
+    <link name="left_gripper">
+      <visual>
+        <origin xyz="${finger_length / 2.0} ${finger_gap / 2.0 + finger_width / 2.0} 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${finger_length} ${finger_width} ${finger_height}"/>
+        </geometry>
+        <material name="silver"/>
+      </visual>
+      <collision>
+        <origin xyz="${finger_length / 2.0} ${finger_gap / 2.0 + finger_width / 2.0} 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${finger_length} ${finger_width} ${finger_height}"/>
+        </geometry>
+      </collision>
+      <xacro:k12_box_inertial
+        mass="${finger_mass}"
+        x="${finger_length}"
+        y="${finger_width}"
+        z="${finger_height}"
+        ox="${finger_length / 2.0}"
+        oy="${finger_gap / 2.0 + finger_width / 2.0}"/>
+    </link>
+
+    <joint name="left_gripper_joint" type="prismatic">
+      <origin xyz="${palm_length} 0 0" rpy="0 0 0"/>
+      <parent link="end_effector"/>
+      <child link="left_gripper"/>
+      <axis xyz="0 1 0"/>
+      <limit lower="0.0" upper="${finger_travel}" effort="80.0" velocity="0.10"/>
+      <dynamics damping="5.0" friction="1.0"/>
+    </joint>
+
+    <link name="right_gripper">
+      <visual>
+        <origin xyz="${finger_length / 2.0} ${-(finger_gap / 2.0 + finger_width / 2.0)} 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${finger_length} ${finger_width} ${finger_height}"/>
+        </geometry>
+        <material name="silver"/>
+      </visual>
+      <collision>
+        <origin xyz="${finger_length / 2.0} ${-(finger_gap / 2.0 + finger_width / 2.0)} 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${finger_length} ${finger_width} ${finger_height}"/>
+        </geometry>
+      </collision>
+      <xacro:k12_box_inertial
+        mass="${finger_mass}"
+        x="${finger_length}"
+        y="${finger_width}"
+        z="${finger_height}"
+        ox="${finger_length / 2.0}"
+        oy="${-(finger_gap / 2.0 + finger_width / 2.0)}"/>
+    </link>
+
+    <joint name="right_gripper_joint" type="prismatic">
+      <origin xyz="${palm_length} 0 0" rpy="0 0 0"/>
+      <parent link="end_effector"/>
+      <child link="right_gripper"/>
+      <axis xyz="0 -1 0"/>
+      <limit lower="0.0" upper="${finger_travel}" effort="80.0" velocity="0.10"/>
+      <dynamics damping="5.0" friction="1.0"/>
+    </joint>
+
+    <transmission name="left_gripper_transmission">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="left_gripper_joint">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="left_gripper_motor">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+    <transmission name="right_gripper_transmission">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="right_gripper_joint">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="right_gripper_motor">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  </xacro:macro>
+</robot>

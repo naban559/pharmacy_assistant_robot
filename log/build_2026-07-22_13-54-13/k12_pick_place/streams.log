@@ -1,0 +1,102 @@
+[0.488s] Invoking command in '/home/nabhan/try_12/src/k12_pick_place': AMENT_PREFIX_PATH=/home/nabhan/try_12/install/articubot_one:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/nabhan/try_12/install/articubot_one:${CMAKE_PREFIX_PATH} PYTHONPATH=/home/nabhan/try_12/build/k12_pick_place/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../../build/k12_pick_place build --build-base /home/nabhan/try_12/build/k12_pick_place/build install --record /home/nabhan/try_12/build/k12_pick_place/install.log --install-scripts $base/lib/k12_pick_place --single-version-externally-managed install_data
+[0.674s] running egg_info
+[0.674s] creating ../../../build/k12_pick_place/k12_pick_place.egg-info
+[0.674s] writing ../../../build/k12_pick_place/k12_pick_place.egg-info/PKG-INFO
+[0.675s] writing dependency_links to ../../../build/k12_pick_place/k12_pick_place.egg-info/dependency_links.txt
+[0.675s] writing entry points to ../../../build/k12_pick_place/k12_pick_place.egg-info/entry_points.txt
+[0.675s] writing requirements to ../../../build/k12_pick_place/k12_pick_place.egg-info/requires.txt
+[0.675s] writing top-level names to ../../../build/k12_pick_place/k12_pick_place.egg-info/top_level.txt
+[0.675s] writing manifest file '../../../build/k12_pick_place/k12_pick_place.egg-info/SOURCES.txt'
+[0.676s] reading manifest file '../../../build/k12_pick_place/k12_pick_place.egg-info/SOURCES.txt'
+[0.677s] writing manifest file '../../../build/k12_pick_place/k12_pick_place.egg-info/SOURCES.txt'
+[0.677s] running build
+[0.677s] running build_py
+[0.677s] creating /home/nabhan/try_12/build/k12_pick_place/build
+[0.677s] creating /home/nabhan/try_12/build/k12_pick_place/build/lib
+[0.677s] creating /home/nabhan/try_12/build/k12_pick_place/build/lib/k12_pick_place
+[0.677s] copying k12_pick_place/__init__.py -> /home/nabhan/try_12/build/k12_pick_place/build/lib/k12_pick_place
+[0.677s] copying k12_pick_place/ik.py -> /home/nabhan/try_12/build/k12_pick_place/build/lib/k12_pick_place
+[0.677s] copying k12_pick_place/object_detector.py -> /home/nabhan/try_12/build/k12_pick_place/build/lib/k12_pick_place
+[0.677s] copying k12_pick_place/pick_place_commander.py -> /home/nabhan/try_12/build/k12_pick_place/build/lib/k12_pick_place
+[0.678s] copying k12_pick_place/scene_spawner.py -> /home/nabhan/try_12/build/k12_pick_place/build/lib/k12_pick_place
+[0.678s] copying k12_pick_place/amms_task_manager.py -> /home/nabhan/try_12/build/k12_pick_place/build/lib/k12_pick_place
+[0.678s] copying k12_pick_place/waypoint_manager.py -> /home/nabhan/try_12/build/k12_pick_place/build/lib/k12_pick_place
+[0.678s] copying k12_pick_place/readiness_gate.py -> /home/nabhan/try_12/build/k12_pick_place/build/lib/k12_pick_place
+[0.678s] copying k12_pick_place/cloud_to_scan.py -> /home/nabhan/try_12/build/k12_pick_place/build/lib/k12_pick_place
+[0.678s] running install
+[0.678s] running install_lib
+[0.679s] creating /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place
+[0.679s] copying /home/nabhan/try_12/build/k12_pick_place/build/lib/k12_pick_place/__init__.py -> /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place
+[0.679s] copying /home/nabhan/try_12/build/k12_pick_place/build/lib/k12_pick_place/ik.py -> /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place
+[0.679s] copying /home/nabhan/try_12/build/k12_pick_place/build/lib/k12_pick_place/object_detector.py -> /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place
+[0.679s] copying /home/nabhan/try_12/build/k12_pick_place/build/lib/k12_pick_place/pick_place_commander.py -> /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place
+[0.679s] copying /home/nabhan/try_12/build/k12_pick_place/build/lib/k12_pick_place/scene_spawner.py -> /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place
+[0.679s] copying /home/nabhan/try_12/build/k12_pick_place/build/lib/k12_pick_place/amms_task_manager.py -> /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place
+[0.680s] copying /home/nabhan/try_12/build/k12_pick_place/build/lib/k12_pick_place/waypoint_manager.py -> /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place
+[0.680s] copying /home/nabhan/try_12/build/k12_pick_place/build/lib/k12_pick_place/readiness_gate.py -> /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place
+[0.680s] copying /home/nabhan/try_12/build/k12_pick_place/build/lib/k12_pick_place/cloud_to_scan.py -> /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place
+[0.680s] byte-compiling /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place/__init__.py to __init__.cpython-310.pyc
+[0.680s] byte-compiling /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place/ik.py to ik.cpython-310.pyc
+[0.681s] byte-compiling /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place/object_detector.py to object_detector.cpython-310.pyc
+[0.683s] byte-compiling /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place/pick_place_commander.py to pick_place_commander.cpython-310.pyc
+[0.693s] byte-compiling /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place/scene_spawner.py to scene_spawner.cpython-310.pyc
+[0.694s] byte-compiling /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place/amms_task_manager.py to amms_task_manager.cpython-310.pyc
+[0.702s] byte-compiling /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place/waypoint_manager.py to waypoint_manager.cpython-310.pyc
+[0.703s] byte-compiling /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place/readiness_gate.py to readiness_gate.cpython-310.pyc
+[0.704s] byte-compiling /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place/cloud_to_scan.py to cloud_to_scan.cpython-310.pyc
+[0.705s] running install_data
+[0.705s] creating /home/nabhan/try_12/install/k12_pick_place/share/ament_index
+[0.705s] creating /home/nabhan/try_12/install/k12_pick_place/share/ament_index/resource_index
+[0.705s] creating /home/nabhan/try_12/install/k12_pick_place/share/ament_index/resource_index/packages
+[0.705s] copying resource/k12_pick_place -> /home/nabhan/try_12/install/k12_pick_place/share/ament_index/resource_index/packages
+[0.706s] copying package.xml -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place
+[0.706s] creating /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/launch
+[0.706s] copying launch/amms_nav_pick_place.launch.py -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/launch
+[0.706s] copying launch/pick_place_demo.launch.py -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/launch
+[0.706s] copying launch/amms_navigation.launch.py -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/launch
+[0.706s] copying launch/amms_mapping.launch.py -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/launch
+[0.706s] creating /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/config
+[0.706s] copying config/pick_place_standalone.yaml -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/config
+[0.706s] copying config/amms_waypoints.yaml -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/config
+[0.706s] copying config/slam_toolbox_amms.yaml -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/config
+[0.706s] copying config/pick_place_service.yaml -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/config
+[0.706s] copying config/pick_place.yaml -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/config
+[0.706s] copying config/nav2_amms.yaml -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/config
+[0.706s] copying config/pointcloud_to_laserscan.yaml -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/config
+[0.707s] copying config/ekf_odom.yaml -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/config
+[0.707s] creating /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/maps
+[0.707s] copying maps/k12_warehouse.yaml -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/maps
+[0.707s] copying maps/pharma.pgm -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/maps
+[0.707s] copying maps/pharma.data -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/maps
+[0.712s] copying maps/amms_clean_map.pgm -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/maps
+[0.712s] copying maps/amms_clean_map.yaml -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/maps
+[0.712s] copying maps/pharma.posegraph -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/maps
+[0.722s] copying maps/pharma.yaml -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/maps
+[0.722s] copying maps/k12_warehouse.pgm -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/maps
+[0.722s] creating /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/rviz
+[0.722s] copying rviz/amms_nav_pick_place.rviz -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/rviz
+[0.722s] creating /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/models
+[0.722s] creating /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/models/k12_pick_table
+[0.722s] copying models/k12_pick_table/model.sdf -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/models/k12_pick_table
+[0.723s] copying models/k12_pick_table/model.config -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/models/k12_pick_table
+[0.723s] creating /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/models/k12_test_cube
+[0.723s] copying models/k12_test_cube/model.sdf -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/models/k12_test_cube
+[0.723s] copying models/k12_test_cube/model.config -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/models/k12_test_cube
+[0.723s] creating /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/models/k12_test_cylinder
+[0.723s] copying models/k12_test_cylinder/model.sdf -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/models/k12_test_cylinder
+[0.723s] copying models/k12_test_cylinder/model.config -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/models/k12_test_cylinder
+[0.723s] creating /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/models/k12_test_block
+[0.723s] copying models/k12_test_block/model.sdf -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/models/k12_test_block
+[0.723s] copying models/k12_test_block/model.config -> /home/nabhan/try_12/install/k12_pick_place/share/k12_pick_place/models/k12_test_block
+[0.723s] running install_egg_info
+[0.724s] Copying ../../../build/k12_pick_place/k12_pick_place.egg-info to /home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages/k12_pick_place-0.1.0-py3.10.egg-info
+[0.725s] running install_scripts
+[0.740s] Installing amms_task_manager script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[0.740s] Installing cloud_to_scan script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[0.740s] Installing object_detector script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[0.740s] Installing pick_place_commander script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[0.740s] Installing readiness_gate script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[0.740s] Installing scene_spawner script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[0.740s] Installing waypoint_manager script to /home/nabhan/try_12/install/k12_pick_place/lib/k12_pick_place
+[0.740s] writing list of installed files to '/home/nabhan/try_12/build/k12_pick_place/install.log'
+[0.762s] Invoked command in '/home/nabhan/try_12/src/k12_pick_place' returned '0': AMENT_PREFIX_PATH=/home/nabhan/try_12/install/articubot_one:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/nabhan/try_12/install/articubot_one:${CMAKE_PREFIX_PATH} PYTHONPATH=/home/nabhan/try_12/build/k12_pick_place/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/nabhan/try_12/install/k12_pick_place/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../../build/k12_pick_place build --build-base /home/nabhan/try_12/build/k12_pick_place/build install --record /home/nabhan/try_12/build/k12_pick_place/install.log --install-scripts $base/lib/k12_pick_place --single-version-externally-managed install_data
