@@ -1,0 +1,237 @@
+[INFO] [launch]: All log files can be found below /home/nabhan/.ros/log/2026-08-13-10-41-04-749782-nabhan-LOQ-15ARP9-13295
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [robot_state_publisher-1]: process started with pid [13298]
+[INFO] [twist_mux-2]: process started with pid [13300]
+[INFO] [ign gazebo-3]: process started with pid [13302]
+[INFO] [create-4]: process started with pid [13304]
+[INFO] [parameter_bridge-5]: process started with pid [13307]
+[INFO] [image_bridge-6]: process started with pid [13309]
+[INFO] [cloud_to_scan-7]: process started with pid [13311]
+[INFO] [ekf_node-8]: process started with pid [13313]
+[INFO] [map_server-9]: process started with pid [13315]
+[INFO] [amcl-10]: process started with pid [13317]
+[INFO] [lifecycle_manager-11]: process started with pid [13319]
+[INFO] [controller_server-12]: process started with pid [13321]
+[INFO] [smoother_server-13]: process started with pid [13323]
+[INFO] [planner_server-14]: process started with pid [13325]
+[INFO] [behavior_server-15]: process started with pid [13327]
+[INFO] [bt_navigator-16]: process started with pid [13329]
+[INFO] [waypoint_follower-17]: process started with pid [13331]
+[INFO] [velocity_smoother-18]: process started with pid [13340]
+[INFO] [lifecycle_manager-19]: process started with pid [13357]
+[INFO] [waypoint_manager-20]: process started with pid [13367]
+[INFO] [scene_spawner-21]: process started with pid [13390]
+[INFO] [object_detector-22]: process started with pid [13408]
+[INFO] [pick_place_commander-23]: process started with pid [13410]
+[twist_mux-2] [INFO] [1786597865.477535905] [twist_mux]: Topic handler 'topics.joystick' subscribed to topic 'cmd_vel_joy': timeout = 0.500000s , priority = 100.
+[twist_mux-2] [INFO] [1786597865.478944186] [twist_mux]: Topic handler 'topics.navigation' subscribed to topic 'cmd_vel': timeout = 0.500000s , priority = 10.
+[twist_mux-2] [INFO] [1786597865.479176995] [twist_mux]: Topic handler 'topics.tracker' subscribed to topic 'cmd_vel_tracker': timeout = 0.500000s , priority = 20.
+[lifecycle_manager-11] [INFO] [1786597865.511559444] [lifecycle_manager_localization]: Creating
+[planner_server-14] [INFO] [1786597865.514092144] [planner_server]: 
+[planner_server-14] 	planner_server lifecycle node launched. 
+[planner_server-14] 	Waiting on external lifecycle transitions to activate
+[planner_server-14] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[planner_server-14] [INFO] [1786597865.515905049] [planner_server]: Creating
+[lifecycle_manager-11] [INFO] [1786597865.522269229] [lifecycle_manager_localization]: [34m[1mCreating and initializing lifecycle service clients[0m[0m
+[amcl-10] [INFO] [1786597865.526595148] [amcl]: 
+[amcl-10] 	amcl lifecycle node launched. 
+[amcl-10] 	Waiting on external lifecycle transitions to activate
+[amcl-10] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[create-4] [INFO] [1786597865.532278033] [ros_gz_sim]: Requesting list of world names.
+[amcl-10] [INFO] [1786597865.533898425] [amcl]: Creating
+[controller_server-12] [INFO] [1786597865.548794492] [controller_server]: 
+[controller_server-12] 	controller_server lifecycle node launched. 
+[controller_server-12] 	Waiting on external lifecycle transitions to activate
+[controller_server-12] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[smoother_server-13] [INFO] [1786597865.559695889] [smoother_server]: 
+[smoother_server-13] 	smoother_server lifecycle node launched. 
+[smoother_server-13] 	Waiting on external lifecycle transitions to activate
+[smoother_server-13] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[controller_server-12] [INFO] [1786597865.560865831] [controller_server]: Creating controller server
+[lifecycle_manager-19] [INFO] [1786597865.565372673] [lifecycle_manager_navigation]: Creating
+[smoother_server-13] [INFO] [1786597865.566400584] [smoother_server]: Creating smoother server
+[lifecycle_manager-19] [INFO] [1786597865.568851203] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle service clients[0m[0m
+[robot_state_publisher-1] [INFO] [1786597865.586676489] [robot_state_publisher]: got segment arm_base_link
+[robot_state_publisher-1] [INFO] [1786597865.586865878] [robot_state_publisher]: got segment base_footprint
+[robot_state_publisher-1] [INFO] [1786597865.586876137] [robot_state_publisher]: got segment base_link
+[robot_state_publisher-1] [INFO] [1786597865.586882088] [robot_state_publisher]: got segment camera_1
+[robot_state_publisher-1] [INFO] [1786597865.586887678] [robot_state_publisher]: got segment camera_1_optical_frame
+[robot_state_publisher-1] [INFO] [1786597865.586893989] [robot_state_publisher]: got segment end_effector
+[robot_state_publisher-1] [INFO] [1786597865.586899870] [robot_state_publisher]: got segment left_front_1
+[robot_state_publisher-1] [INFO] [1786597865.586906002] [robot_state_publisher]: got segment left_gripper
+[robot_state_publisher-1] [INFO] [1786597865.586911762] [robot_state_publisher]: got segment left_rear_1
+[robot_state_publisher-1] [INFO] [1786597865.586917483] [robot_state_publisher]: got segment lidar_1
+[robot_state_publisher-1] [INFO] [1786597865.586923564] [robot_state_publisher]: got segment link1
+[robot_state_publisher-1] [INFO] [1786597865.586929264] [robot_state_publisher]: got segment link2
+[robot_state_publisher-1] [INFO] [1786597865.586935275] [robot_state_publisher]: got segment link3
+[robot_state_publisher-1] [INFO] [1786597865.586941307] [robot_state_publisher]: got segment link4
+[robot_state_publisher-1] [INFO] [1786597865.586947167] [robot_state_publisher]: got segment link5
+[robot_state_publisher-1] [INFO] [1786597865.586952888] [robot_state_publisher]: got segment right_front_1
+[robot_state_publisher-1] [INFO] [1786597865.586958699] [robot_state_publisher]: got segment right_gripper
+[robot_state_publisher-1] [INFO] [1786597865.586964048] [robot_state_publisher]: got segment right_rear_1
+[robot_state_publisher-1] [INFO] [1786597865.586969829] [robot_state_publisher]: got segment ultra_front_1
+[robot_state_publisher-1] [INFO] [1786597865.586975309] [robot_state_publisher]: got segment ultra_rear_1
+[planner_server-14] [INFO] [1786597865.631167296] [global_costmap.global_costmap]: 
+[planner_server-14] 	global_costmap lifecycle node launched. 
+[planner_server-14] 	Waiting on external lifecycle transitions to activate
+[planner_server-14] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[planner_server-14] [INFO] [1786597865.631756811] [global_costmap.global_costmap]: Creating Costmap
+[waypoint_follower-17] [INFO] [1786597865.631301734] [waypoint_follower]: 
+[waypoint_follower-17] 	waypoint_follower lifecycle node launched. 
+[waypoint_follower-17] 	Waiting on external lifecycle transitions to activate
+[waypoint_follower-17] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[waypoint_follower-17] [INFO] [1786597865.631938976] [waypoint_follower]: Creating
+[bt_navigator-16] [INFO] [1786597865.642340303] [bt_navigator]: 
+[bt_navigator-16] 	bt_navigator lifecycle node launched. 
+[bt_navigator-16] 	Waiting on external lifecycle transitions to activate
+[bt_navigator-16] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[bt_navigator-16] [INFO] [1786597865.642479800] [bt_navigator]: Creating
+[behavior_server-15] [INFO] [1786597865.643584162] [behavior_server]: 
+[behavior_server-15] 	behavior_server lifecycle node launched. 
+[behavior_server-15] 	Waiting on external lifecycle transitions to activate
+[behavior_server-15] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[velocity_smoother-18] [INFO] [1786597865.644097125] [velocity_smoother]: 
+[velocity_smoother-18] 	velocity_smoother lifecycle node launched. 
+[velocity_smoother-18] 	Waiting on external lifecycle transitions to activate
+[velocity_smoother-18] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[lifecycle_manager-11] [INFO] [1786597865.680916508] [lifecycle_manager_localization]: [34m[1mStarting managed nodes bringup...[0m[0m
+[lifecycle_manager-11] [INFO] [1786597865.680971670] [lifecycle_manager_localization]: [34m[1mConfiguring map_server[0m[0m
+[controller_server-12] [INFO] [1786597865.683818878] [local_costmap.local_costmap]: 
+[controller_server-12] 	local_costmap lifecycle node launched. 
+[controller_server-12] 	Waiting on external lifecycle transitions to activate
+[controller_server-12] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[controller_server-12] [INFO] [1786597865.684465638] [local_costmap.local_costmap]: Creating Costmap
+[map_server-9] [INFO] [1786597865.691988970] [map_server]: 
+[map_server-9] 	map_server lifecycle node launched. 
+[map_server-9] 	Waiting on external lifecycle transitions to activate
+[map_server-9] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[map_server-9] [INFO] [1786597865.692440681] [map_server]: Creating
+[map_server-9] [INFO] [1786597865.702976305] [map_server]: Configuring
+[map_server-9] [INFO] [1786597865.704023592] [map_io]: Loading yaml file: /home/nabhan/try_15/install/k12_pick_place/share/k12_pick_place/maps/pharma.yaml
+[map_server-9] [INFO] [1786597865.704308336] [map_io]: resolution: 0.05
+[map_server-9] [INFO] [1786597865.704321360] [map_io]: origin[0]: -6.22
+[map_server-9] [INFO] [1786597865.704327521] [map_io]: origin[1]: -3.78
+[map_server-9] [INFO] [1786597865.704333362] [map_io]: origin[2]: 0
+[map_server-9] [INFO] [1786597865.704339784] [map_io]: free_thresh: 0.25
+[map_server-9] [INFO] [1786597865.704345645] [map_io]: occupied_thresh: 0.65
+[map_server-9] [INFO] [1786597865.704352467] [map_io]: mode: trinary
+[map_server-9] [INFO] [1786597865.705535704] [map_io]: negate: 0
+[map_server-9] [INFO] [1786597865.706702100] [map_io]: Loading image_file: /home/nabhan/try_15/install/k12_pick_place/share/k12_pick_place/maps/pharma.pgm
+[map_server-9] [INFO] [1786597865.717195116] [map_io]: Read map /home/nabhan/try_15/install/k12_pick_place/share/k12_pick_place/maps/pharma.pgm: 250 X 150 map @ 0.05 m/cell
+[lifecycle_manager-11] [INFO] [1786597865.724387258] [lifecycle_manager_localization]: [34m[1mConfiguring amcl[0m[0m
+[amcl-10] [INFO] [1786597865.724649220] [amcl]: Configuring
+[amcl-10] [INFO] [1786597865.724726923] [amcl]: initTransforms
+[amcl-10] [INFO] [1786597865.737950543] [amcl]: initPubSub
+[amcl-10] [INFO] [1786597865.745943068] [amcl]: Subscribed to map topic.
+[lifecycle_manager-11] [INFO] [1786597865.754967883] [lifecycle_manager_localization]: [34m[1mActivating map_server[0m[0m
+[map_server-9] [INFO] [1786597865.755179913] [map_server]: Activating
+[map_server-9] [INFO] [1786597865.755372647] [map_server]: Creating bond (map_server) to lifecycle manager.
+[ign gazebo-3] Warning: Ignoring XDG_SESSION_TYPE=wayland on Gnome. Use QT_QPA_PLATFORM=wayland to run on Wayland anyway.
+[lifecycle_manager-19] [INFO] [1786597865.847620541] [lifecycle_manager_navigation]: [34m[1mStarting managed nodes bringup...[0m[0m
+[lifecycle_manager-19] [INFO] [1786597865.847686552] [lifecycle_manager_navigation]: [34m[1mConfiguring controller_server[0m[0m
+[controller_server-12] [INFO] [1786597865.848035945] [controller_server]: Configuring controller interface
+[controller_server-12] [INFO] [1786597865.848469994] [controller_server]: getting goal checker plugins..
+[controller_server-12] [INFO] [1786597865.848711017] [controller_server]: Controller frequency set to 15.0000Hz
+[controller_server-12] [INFO] [1786597865.848757823] [local_costmap.local_costmap]: Configuring
+[amcl-10] [INFO] [1786597865.852972287] [amcl]: Received a 250 X 150 map @ 0.050 m/pix
+[controller_server-12] [INFO] [1786597865.856181322] [local_costmap.local_costmap]: Using plugin "static_layer"
+[controller_server-12] [INFO] [1786597865.858647840] [local_costmap.local_costmap]: Subscribing to the map topic (/map) with transient local durability
+[controller_server-12] [INFO] [1786597865.861980421] [local_costmap.local_costmap]: Initialized plugin "static_layer"
+[controller_server-12] [INFO] [1786597865.862019343] [local_costmap.local_costmap]: Using plugin "obstacle_layer"
+[controller_server-12] [INFO] [1786597865.862492603] [local_costmap.local_costmap]: Subscribed to Topics: scan
+[controller_server-12] [INFO] [1786597865.866549588] [local_costmap.local_costmap]: Initialized plugin "obstacle_layer"
+[controller_server-12] [INFO] [1786597865.866585404] [local_costmap.local_costmap]: Using plugin "inflation_layer"
+[controller_server-12] [INFO] [1786597865.867221714] [local_costmap.local_costmap]: Initialized plugin "inflation_layer"
+[controller_server-12] [INFO] [1786597865.876978395] [local_costmap.local_costmap]: StaticLayer: Resizing static layer to 250 X 150 at 0.050000 m/pix
+[controller_server-12] [INFO] [1786597865.877207367] [controller_server]: Created progress_checker : progress_checker of type nav2_controller::SimpleProgressChecker
+[controller_server-12] [INFO] [1786597865.880358975] [controller_server]: Created goal checker : general_goal_checker of type nav2_controller::SimpleGoalChecker
+[controller_server-12] [INFO] [1786597865.881118142] [controller_server]: Controller Server has general_goal_checker  goal checkers available.
+[controller_server-12] [INFO] [1786597865.883296620] [controller_server]: Created controller : FollowPath of type dwb_core::DWBLocalPlanner
+[controller_server-12] [INFO] [1786597865.886685405] [controller_server]: Setting transform_tolerance to 0.200000
+[controller_server-12] [INFO] [1786597865.897437447] [controller_server]: Using critic "RotateToGoal" (dwb_critics::RotateToGoalCritic)
+[controller_server-12] [INFO] [1786597865.897987609] [controller_server]: Critic plugin initialized
+[controller_server-12] [INFO] [1786597865.898103453] [controller_server]: Using critic "Oscillation" (dwb_critics::OscillationCritic)
+[controller_server-12] [INFO] [1786597865.898407712] [controller_server]: Critic plugin initialized
+[controller_server-12] [INFO] [1786597865.898492829] [controller_server]: Using critic "BaseObstacle" (dwb_critics::BaseObstacleCritic)
+[controller_server-12] [INFO] [1786597865.898611978] [controller_server]: Critic plugin initialized
+[controller_server-12] [INFO] [1786597865.898704649] [controller_server]: Using critic "GoalAlign" (dwb_critics::GoalAlignCritic)
+[controller_server-12] [INFO] [1786597865.899901891] [controller_server]: Critic plugin initialized
+[controller_server-12] [INFO] [1786597865.900160307] [controller_server]: Using critic "PathAlign" (dwb_critics::PathAlignCritic)
+[controller_server-12] [INFO] [1786597865.900598673] [controller_server]: Critic plugin initialized
+[controller_server-12] [INFO] [1786597865.900696574] [controller_server]: Using critic "PathDist" (dwb_critics::PathDistCritic)
+[controller_server-12] [INFO] [1786597865.900911609] [controller_server]: Critic plugin initialized
+[controller_server-12] [INFO] [1786597865.901004971] [controller_server]: Using critic "GoalDist" (dwb_critics::GoalDistCritic)
+[controller_server-12] [INFO] [1786597865.901624791] [controller_server]: Critic plugin initialized
+[controller_server-12] [INFO] [1786597865.901653274] [controller_server]: Controller Server has FollowPath  controllers available.
+[lifecycle_manager-11] [INFO] [1786597865.962643568] [lifecycle_manager_localization]: Server map_server connected with bond.
+[lifecycle_manager-11] [INFO] [1786597865.963532213] [lifecycle_manager_localization]: [34m[1mActivating amcl[0m[0m
+[amcl-10] [INFO] [1786597865.963993922] [amcl]: Activating
+[amcl-10] [INFO] [1786597865.964804363] [amcl]: initialPoseReceived
+[amcl-10] [INFO] [1786597865.964917852] [amcl]: Setting pose (0.000000): 0.000 0.000 0.000
+[amcl-10] [INFO] [1786597865.966563510] [amcl]: Creating bond (amcl) to lifecycle manager.
+[lifecycle_manager-19] [INFO] [1786597865.989110233] [lifecycle_manager_navigation]: [34m[1mConfiguring smoother_server[0m[0m
+[smoother_server-13] [INFO] [1786597865.989380640] [smoother_server]: Configuring smoother server
+[smoother_server-13] [INFO] [1786597866.001198564] [smoother_server]: Created smoother : simple_smoother of type nav2_smoother::SimpleSmoother
+[smoother_server-13] [INFO] [1786597866.003428146] [smoother_server]: Smoother Server has simple_smoother  smoothers available.
+[lifecycle_manager-19] [INFO] [1786597866.015870949] [lifecycle_manager_navigation]: [34m[1mConfiguring planner_server[0m[0m
+[planner_server-14] [INFO] [1786597866.016107565] [planner_server]: Configuring
+[planner_server-14] [INFO] [1786597866.016141477] [global_costmap.global_costmap]: Configuring
+[planner_server-14] [INFO] [1786597866.021865959] [global_costmap.global_costmap]: Using plugin "static_layer"
+[planner_server-14] [INFO] [1786597866.024801731] [global_costmap.global_costmap]: Subscribing to the map topic (/map) with transient local durability
+[planner_server-14] [INFO] [1786597866.026187260] [global_costmap.global_costmap]: Initialized plugin "static_layer"
+[planner_server-14] [INFO] [1786597866.026218408] [global_costmap.global_costmap]: Using plugin "obstacle_layer"
+[planner_server-14] [INFO] [1786597866.026583068] [global_costmap.global_costmap]: Subscribed to Topics: scan
+[planner_server-14] [INFO] [1786597866.031348627] [global_costmap.global_costmap]: Initialized plugin "obstacle_layer"
+[planner_server-14] [INFO] [1786597866.031379483] [global_costmap.global_costmap]: Using plugin "inflation_layer"
+[planner_server-14] [INFO] [1786597866.032018289] [global_costmap.global_costmap]: Initialized plugin "inflation_layer"
+[ign gazebo-3] [1;36m[Dbg] [gz.cc:161] [0m[1;36mSubscribing to [[0m[1;36m/gazebo/starting_world[0m[1;36m].[0m[1;36m[0m
+[ign gazebo-3] [1;36m[Dbg] [gz.cc:163] [0m[1;36mWaiting for a world to be set from the GUI...[0m[1;36m[0m
+[ign gazebo-3] [1;32m[Msg] [0m[1;32mReceived world [[0m[1;32m/home/nabhan/try_15/install/articubot_one/share/articubot_one/worlds/pharma.world[0m[1;32m] from the GUI.[0m[1;32m[0m
+[ign gazebo-3] [1;36m[Dbg] [gz.cc:167] [0m[1;36mUnsubscribing from [[0m[1;36m/gazebo/starting_world[0m[1;36m].[0m[1;36m[0m
+[ign gazebo-3] [1;32m[Msg] [0m[1;32mIgnition Gazebo Server v[0m[1;32m6.18.0[0m[1;32m[0m
+[ign gazebo-3] [1;32m[Msg] [0m[1;32mLoading SDF world file[[0m[1;32m/home/nabhan/try_15/install/articubot_one/share/articubot_one/worlds/pharma.world[0m[1;32m].[0m
+[ign gazebo-3] [1;32m[Msg] [0m[1;32mServing entity system service on [[0m[1;32m/[0m[1;32mentity/system/add[0m[1;32m][0m[1;32m[0m
+[ign gazebo-3] [1;36m[Dbg] [Physics.cc:804] [0m[1;36mLoaded [[0m[1;36mignition::physics::dartsim::Plugin[0m[1;36m] from library [[0m[1;36m/usr/lib/x86_64-linux-gnu/ign-physics-5/engine-plugins/libignition-physics-dartsim-plugin.so[0m[1;36m][0m[1;36m[0m
+[ign gazebo-3] [1;36m[Dbg] [SystemManager.cc:73] [0m[1;36mLoaded system [[0m[1;36mgz::sim::systems::Physics[0m[1;36m] for entity [[0m[1;36m1[0m[1;36m][0m[1;36m[0m
+[ign gazebo-3] [1;32m[Msg] [0m[1;32mCreate service on [[0m[1;32m/world/pharmacy_world/create[0m[1;32m][0m[1;32m[0m
+[ign gazebo-3] [1;32m[Msg] [0m[1;32mRemove service on [[0m[1;32m/world/pharmacy_world/remove[0m[1;32m][0m[1;32m[0m
+[ign gazebo-3] [1;32m[Msg] [0m[1;32mPose service on [[0m[1;32m/world/pharmacy_world/set_pose[0m[1;32m][0m[1;32m[0m
+[ign gazebo-3] [1;32m[Msg] [0m[1;32mPose service on [[0m[1;32m/world/pharmacy_world/set_pose_vector[0m[1;32m][0m[1;32m[0m
+[ign gazebo-3] [1;32m[Msg] [0m[1;32mLight configuration service on [[0m[1;32m/world/pharmacy_world/light_config[0m[1;32m][0m[1;32m[0m
+[ign gazebo-3] [1;32m[Msg] [0m[1;32mPhysics service on [[0m[1;32m/world/pharmacy_world/set_physics[0m[1;32m][0m[1;32m[0m
+[ign gazebo-3] [1;32m[Msg] [0m[1;32mSphericalCoordinates service on [[0m[1;32m/world/pharmacy_world/set_spherical_coordinates[0m[1;32m][0m[1;32m[0m
+[ign gazebo-3] [1;32m[Msg] [0m[1;32mEnable collision service on [[0m[1;32m/world/pharmacy_world/enable_collision[0m[1;32m][0m[1;32m[0m
+[ign gazebo-3] [1;32m[Msg] [0m[1;32mDisable collision service on [[0m[1;32m/world/pharmacy_world/disable_collision[0m[1;32m][0m[1;32m[0m
+[ign gazebo-3] [1;32m[Msg] [0m[1;32mMaterial service on [[0m[1;32m/world/pharmacy_world/visual_config[0m[1;32m][0m[1;32m[0m
+[ign gazebo-3] [1;32m[Msg] [0m[1;32mMaterial service on [[0m[1;32m/world/pharmacy_world/wheel_slip[0m[1;32m][0m[1;32m[0m
+[ign gazebo-3] [1;36m[Dbg] [SystemManager.cc:73] [0m[1;36mLoaded system [[0m[1;36mgz::sim::systems::UserCommands[0m[1;36m] for entity [[0m[1;36m1[0m[1;36m][0m[1;36m[0m
+[ign gazebo-3] [1;36m[Dbg] [SystemManager.cc:73] [0m[1;36mLoaded system [[0m[1;36mgz::sim::systems::SceneBroadcaster[0m[1;36m] for entity [[0m[1;36m1[0m[1;36m][0m[1;36m[0m
+[ign gazebo-3] [1;36m[Dbg] [Sensors.cc:506] [0m[1;36mConfiguring Sensors system[0m[1;36m[0m
+[ign gazebo-3] [1;36m[Dbg] [Sensors.cc:431] [0m[1;36mSensorsPrivate::Run[0m[1;36m[0m
+[ign gazebo-3] [1;36m[Dbg] [SystemManager.cc:73] [0m[1;36mLoaded system [[0m[1;36mgz::sim::systems::Sensors[0m[1;36m] for entity [[0m[1;36m1[0m[1;36m][0m[1;36m[0m
+[ign gazebo-3] [1;36m
+[ign gazebo-3] [Dbg] [Sensors.cc:411] [0m[1;36mSensorsPrivate::RenderThread started[0m[1;36m[0m
+[ign gazebo-3] [1;36m[Dbg] [Sensors.cc:258] [0m[1;36mWaiting for init[0m[1;36m[0m
+[ign gazebo-3] [1;36m[Dbg] [SystemManager.cc:73] [0m[1;36mLoaded system [[0m[1;36mgz::sim::systems::Imu[0m[1;36m] for entity [[0m[1;36m1[0m[1;36m][0m[1;36m[0m
+[ign gazebo-3] [1;36m[Dbg] [SystemManager.cc:73] [0m[1;36mLoaded system [[0m[1;36mgz::sim::systems::Contact[0m[1;36m] for entity [[0m[1;36m1[0m[1;36m][0m[1;36m[0m
+[ign gazebo-3] [1;32m[Msg] [0m[1;32mLoaded level [[0m[1;32m3[0m[1;32m][0m[1;32m[0m
+[ign gazebo-3] [1;32m[Msg] [0m[1;32mServing world controls on [[0m[1;32m/world/pharmacy_world[0m[1;32m/control], [[0m[1;32m/world/pharmacy_world[0m[1;32m/control/state] and [[0m[1;32m/world/pharmacy_world[0m[1;32m/playback/control][0m[1;32m[0m
+[planner_server-14] [INFO] [1786597866.046507958] [global_costmap.global_costmap]: StaticLayer: Resizing costmap to 250 X 150 at 0.050000 m/pix
+[planner_server-14] [INFO] [1786597866.046772415] [planner_server]: Created global planner plugin GridBased of type nav2_navfn_planner/NavfnPlanner
+[planner_server-14] [INFO] [1786597866.046802480] [planner_server]: Configuring plugin GridBased of type NavfnPlanner
+[planner_server-14] [INFO] [1786597866.048171178] [planner_server]: Planner Server has GridBased  planners available.
+[lifecycle_manager-11] [INFO] [1786597866.085976806] [lifecycle_manager_localization]: Server amcl connected with bond.
+[lifecycle_manager-11] [INFO] [1786597866.086026348] [lifecycle_manager_localization]: [34m[1mManaged nodes are active[0m[0m
+[lifecycle_manager-11] [INFO] [1786597866.086040093] [lifecycle_manager_localization]: [34m[1mCreating bond timer...[0m[0m
+[lifecycle_manager-19] [INFO] [1786597866.089694406] [lifecycle_manager_navigation]: [34m[1mConfiguring behavior_server[0m[0m
+[behavior_server-15] [INFO] [1786597866.089941561] [behavior_server]: Configuring
+[behavior_server-15] [INFO] [1786597866.098118977] [behavior_server]: Creating behavior plugin spin of type nav2_behaviors/Spin
+[behavior_server-15] [INFO] [1786597866.098746201] [behavior_server]: Configuring spin
+[behavior_server-15] [INFO] [1786597866.103101785] [behavior_server]: Creating behavior plugin backup of type nav2_behaviors/BackUp
+[behavior_server-15] [INFO] [1786597866.103753423] [behavior_server]: Configuring backup
+[behavior_server-15] [INFO] [1786597866.109989016] [behavior_server]: Creating behavior plugin drive_on_heading of type nav2_behaviors/DriveOnHeading
+[behavior_server-15] [INFO] [1786597866.110590563] [behavior_server]: Configuring drive_on_heading
+[behavior_server-15] [INFO] [1786597866.115584401] [behavior_server]: Creating behavior plugin wait of type nav2_behaviors/Wait
+[behavior_server-15] [INFO] [1786597866.116296581] [behavior_server]: Configuring wait
+[lifecycle_manager-19] [INFO] [1786597866.122210072] [lifecycle_manager_navigation]: [34m[1mConfiguring bt_navigator[0m[0m
+[bt_navigator-16] [INFO] [1786597866.122516545] [bt_navigator]: Configuring

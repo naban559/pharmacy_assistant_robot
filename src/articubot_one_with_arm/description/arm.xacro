@@ -1,0 +1,302 @@
+<?xml version="1.0"?>
+<robot name="k12_arm" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:include filename="$(find articubot_one)/description/gripper.xacro"/>
+
+  <!--
+    Rescaled to fit the actual articubot_one chassis (base_link collision
+    box: 0.28 x 0.20 x 0.06 m). The original k12_pick_place arm.xacro was
+    dimensioned for a much larger ~1.14 x 0.71 m chassis; every length
+    below is that original value x 0.30 so the arm is physically
+    proportionate to this rover instead of ~3x longer than the whole robot.
+    Masses are scaled by ~0.05 (steeper than pure cube-law 0.027, to keep
+    joints plausibly actuatable) so the arm doesn't dominate the rover's
+    0.77 kg base mass and tip it over.
+  -->
+  <xacro:property name="k12_arm_base_radius" value="0.061425"/>
+  <xacro:property name="k12_arm_base_plate_height" value="0.0131625"/>
+  <xacro:property name="k12_arm_base_height" value="0.0921375"/>
+  <xacro:property name="k12_arm_shoulder_offset" value="0.04168125"/>
+  <xacro:property name="k12_arm_upper_length" value="0.23911875"/>
+  <xacro:property name="k12_arm_forearm_length" value="0.19524375"/>
+  <xacro:property name="k12_arm_wrist_length" value="0.08994375"/>
+  <xacro:property name="k12_arm_roll_length" value="0.04168125"/>
+  <xacro:property name="k12_arm_link_width" value="0.03290625"/>
+  <xacro:property name="k12_arm_link_height" value="0.0307125"/>
+  <xacro:property name="k12_gripper_palm_length" value="0.05265"/>
+  <xacro:property name="k12_gripper_palm_width" value="0.05265"/>
+  <xacro:property name="k12_gripper_palm_height" value="0.0307125"/>
+  <xacro:property name="k12_gripper_finger_length" value="0.05923125"/>
+  <xacro:property name="k12_gripper_finger_width" value="0.01535625"/>
+  <xacro:property name="k12_gripper_finger_height" value="0.02413125"/>
+  <xacro:property name="k12_gripper_finger_travel" value="0.0394875"/>
+  <xacro:property name="k12_gripper_finger_gap" value="0.0131625"/>
+
+  <xacro:property name="k12_arm_base_mass" value="0.208543"/>
+  <xacro:property name="k12_arm_link1_mass" value="0.354523"/>
+  <xacro:property name="k12_arm_link2_mass" value="0.458795"/>
+  <xacro:property name="k12_arm_link3_mass" value="0.354523"/>
+  <xacro:property name="k12_arm_link4_mass" value="0.166835"/>
+  <xacro:property name="k12_arm_link5_mass" value="0.104272"/>
+  <xacro:property name="k12_gripper_palm_mass" value="0.083417"/>
+  <xacro:property name="k12_gripper_finger_mass" value="0.020854"/>
+
+  <xacro:macro name="k12_cylinder_z_inertial" params="mass radius length ox:=0 oy:=0 oz:=0">
+    <inertial>
+      <origin xyz="${ox} ${oy} ${oz}" rpy="0 0 0"/>
+      <mass value="${mass}"/>
+      <inertia
+        ixx="${mass * (3.0 * radius * radius + length * length) / 12.0}"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="${mass * (3.0 * radius * radius + length * length) / 12.0}"
+        iyz="0.0"
+        izz="${mass * radius * radius / 2.0}"/>
+    </inertial>
+  </xacro:macro>
+
+  <!--
+    ADDED: this macro was called 3x below (link2/link3/link4) but was never
+    actually defined, a real bug from the first version of this file.
+    Standard solid-cuboid inertia tensor about the box's own center.
+  -->
+  <xacro:macro name="k12_box_inertial" params="mass x y z ox:=0 oy:=0 oz:=0">
+    <inertial>
+      <origin xyz="${ox} ${oy} ${oz}" rpy="0 0 0"/>
+      <mass value="${mass}"/>
+      <inertia
+        ixx="${mass * (y * y + z * z) / 12.0}"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="${mass * (x * x + z * z) / 12.0}"
+        iyz="0.0"
+        izz="${mass * (x * x + y * y) / 12.0}"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="k12_arm_transmission" params="joint actuator">
+    <transmission name="${joint}_transmission">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${joint}">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${actuator}">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  </xacro:macro>
+
+  <xacro:macro name="k12_arm" params="parent mount_x mount_y mount_z">
+    <joint name="arm_mount_joint" type="fixed">
+      <origin xyz="${mount_x} ${mount_y} ${mount_z}" rpy="0 0 0"/>
+      <parent link="${parent}"/>
+      <child link="arm_base_link"/>
+    </joint>
+
+    <link name="arm_base_link">
+      <visual>
+        <origin xyz="0 0 ${k12_arm_base_plate_height / 2.0}" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${k12_arm_base_radius}" length="${k12_arm_base_plate_height}"/>
+        </geometry>
+        <material name="silver"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 ${k12_arm_base_plate_height / 2.0}" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${k12_arm_base_radius}" length="${k12_arm_base_plate_height}"/>
+        </geometry>
+      </collision>
+      <xacro:k12_cylinder_z_inertial
+        mass="${k12_arm_base_mass}"
+        radius="${k12_arm_base_radius}"
+        length="${k12_arm_base_plate_height}"
+        oz="${k12_arm_base_plate_height / 2.0}"/>
+    </link>
+
+    <joint name="arm_base_yaw_joint" type="revolute">
+      <origin xyz="0 0 ${k12_arm_base_plate_height}" rpy="0 0 0"/>
+      <parent link="arm_base_link"/>
+      <child link="link1"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="-2.70" upper="2.70" effort="14.28" velocity="1.20"/>
+      <dynamics damping="0.10" friction="0.02"/>
+    </joint>
+
+    <link name="link1">
+      <visual>
+        <origin xyz="0 0 ${k12_arm_base_height / 2.0}" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${0.65 * k12_arm_base_radius}" length="${k12_arm_base_height}"/>
+        </geometry>
+        <material name="silver"/>
+      </visual>
+      <visual>
+        <origin xyz="${k12_arm_shoulder_offset / 2.0} 0 ${k12_arm_base_height}" rpy="0 0 0"/>
+        <geometry>
+          <box size="${k12_arm_shoulder_offset} ${1.35 * k12_arm_link_width} ${1.35 * k12_arm_link_height}"/>
+        </geometry>
+        <material name="silver"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 ${k12_arm_base_height / 2.0}" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${0.65 * k12_arm_base_radius}" length="${k12_arm_base_height}"/>
+        </geometry>
+      </collision>
+      <collision>
+        <origin xyz="${k12_arm_shoulder_offset / 2.0} 0 ${k12_arm_base_height}" rpy="0 0 0"/>
+        <geometry>
+          <box size="${k12_arm_shoulder_offset} ${1.35 * k12_arm_link_width} ${1.35 * k12_arm_link_height}"/>
+        </geometry>
+      </collision>
+      <xacro:k12_cylinder_z_inertial
+        mass="${k12_arm_link1_mass}"
+        radius="${0.65 * k12_arm_base_radius}"
+        length="${k12_arm_base_height}"
+        oz="${k12_arm_base_height / 2.0}"/>
+    </link>
+
+    <joint name="arm_shoulder_pitch_joint" type="revolute">
+      <origin xyz="${k12_arm_shoulder_offset} 0 ${k12_arm_base_height}" rpy="0 0 0"/>
+      <parent link="link1"/>
+      <child link="link2"/>
+      <axis xyz="0 1 0"/>
+      <limit lower="-1.75" upper="1.45" effort="26.776" velocity="0.90"/>
+      <dynamics damping="0.12" friction="0.03"/>
+    </joint>
+
+    <link name="link2">
+      <visual>
+        <origin xyz="${k12_arm_upper_length / 2.0} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${k12_arm_upper_length} ${k12_arm_link_width} ${k12_arm_link_height}"/>
+        </geometry>
+        <material name="silver"/>
+      </visual>
+      <collision>
+        <origin xyz="${k12_arm_upper_length / 2.0} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${k12_arm_upper_length} ${k12_arm_link_width} ${k12_arm_link_height}"/>
+        </geometry>
+      </collision>
+      <xacro:k12_box_inertial
+        mass="${k12_arm_link2_mass}"
+        x="${k12_arm_upper_length}"
+        y="${k12_arm_link_width}"
+        z="${k12_arm_link_height}"
+        ox="${k12_arm_upper_length / 2.0}"/>
+    </link>
+
+    <joint name="arm_elbow_pitch_joint" type="revolute">
+      <origin xyz="${k12_arm_upper_length} 0 0" rpy="0 0 0"/>
+      <parent link="link2"/>
+      <child link="link3"/>
+      <axis xyz="0 1 0"/>
+      <limit lower="-2.45" upper="2.45" effort="17.85" velocity="1.10"/>
+      <dynamics damping="0.10" friction="0.02"/>
+    </joint>
+
+    <link name="link3">
+      <visual>
+        <origin xyz="${k12_arm_forearm_length / 2.0} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${k12_arm_forearm_length} ${0.90 * k12_arm_link_width} ${0.90 * k12_arm_link_height}"/>
+        </geometry>
+        <material name="silver"/>
+      </visual>
+      <collision>
+        <origin xyz="${k12_arm_forearm_length / 2.0} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${k12_arm_forearm_length} ${0.90 * k12_arm_link_width} ${0.90 * k12_arm_link_height}"/>
+        </geometry>
+      </collision>
+      <xacro:k12_box_inertial
+        mass="${k12_arm_link3_mass}"
+        x="${k12_arm_forearm_length}"
+        y="${0.90 * k12_arm_link_width}"
+        z="${0.90 * k12_arm_link_height}"
+        ox="${k12_arm_forearm_length / 2.0}"/>
+    </link>
+
+    <joint name="arm_wrist_pitch_joint" type="revolute">
+      <origin xyz="${k12_arm_forearm_length} 0 0" rpy="0 0 0"/>
+      <parent link="link3"/>
+      <child link="link4"/>
+      <axis xyz="0 1 0"/>
+      <limit lower="-1.90" upper="1.90" effort="8.925" velocity="1.50"/>
+      <dynamics damping="0.06" friction="0.015"/>
+    </joint>
+
+    <link name="link4">
+      <visual>
+        <origin xyz="${k12_arm_wrist_length / 2.0} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${k12_arm_wrist_length} ${0.75 * k12_arm_link_width} ${0.75 * k12_arm_link_height}"/>
+        </geometry>
+        <material name="silver"/>
+      </visual>
+      <collision>
+        <origin xyz="${k12_arm_wrist_length / 2.0} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${k12_arm_wrist_length} ${0.75 * k12_arm_link_width} ${0.75 * k12_arm_link_height}"/>
+        </geometry>
+      </collision>
+      <xacro:k12_box_inertial
+        mass="${k12_arm_link4_mass}"
+        x="${k12_arm_wrist_length}"
+        y="${0.75 * k12_arm_link_width}"
+        z="${0.75 * k12_arm_link_height}"
+        ox="${k12_arm_wrist_length / 2.0}"/>
+    </link>
+
+    <joint name="arm_wrist_roll_joint" type="revolute">
+      <origin xyz="${k12_arm_wrist_length} 0 0" rpy="0 0 0"/>
+      <parent link="link4"/>
+      <child link="link5"/>
+      <axis xyz="1 0 0"/>
+      <limit lower="-3.14159" upper="3.14159" effort="5.355" velocity="2.00"/>
+      <dynamics damping="0.03" friction="0.01"/>
+    </joint>
+
+    <link name="link5">
+      <visual>
+        <origin xyz="${k12_arm_roll_length / 2.0} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${k12_arm_roll_length} ${0.65 * k12_arm_link_width} ${0.65 * k12_arm_link_height}"/>
+        </geometry>
+        <material name="silver"/>
+      </visual>
+      <collision>
+        <origin xyz="${k12_arm_roll_length / 2.0} 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${k12_arm_roll_length} ${0.65 * k12_arm_link_width} ${0.65 * k12_arm_link_height}"/>
+        </geometry>
+      </collision>
+      <xacro:k12_cylinder_z_inertial
+        mass="${k12_arm_link5_mass}"
+        radius="${0.30 * k12_arm_link_width}"
+        length="${k12_arm_roll_length}"
+        ox="${k12_arm_roll_length / 2.0}"/>
+    </link>
+
+    <xacro:parallel_gripper
+      parent="link5"
+      palm_length="${k12_gripper_palm_length}"
+      palm_width="${k12_gripper_palm_width}"
+      palm_height="${k12_gripper_palm_height}"
+      palm_mass="${k12_gripper_palm_mass}"
+      finger_length="${k12_gripper_finger_length}"
+      finger_width="${k12_gripper_finger_width}"
+      finger_height="${k12_gripper_finger_height}"
+      finger_mass="${k12_gripper_finger_mass}"
+      finger_travel="${k12_gripper_finger_travel}"
+      finger_gap="${k12_gripper_finger_gap}"/>
+
+    <xacro:k12_arm_transmission joint="arm_base_yaw_joint" actuator="arm_base_yaw_motor"/>
+    <xacro:k12_arm_transmission joint="arm_shoulder_pitch_joint" actuator="arm_shoulder_pitch_motor"/>
+    <xacro:k12_arm_transmission joint="arm_elbow_pitch_joint" actuator="arm_elbow_pitch_motor"/>
+    <xacro:k12_arm_transmission joint="arm_wrist_pitch_joint" actuator="arm_wrist_pitch_motor"/>
+    <xacro:k12_arm_transmission joint="arm_wrist_roll_joint" actuator="arm_wrist_roll_motor"/>
+  </xacro:macro>
+</robot>

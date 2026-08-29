@@ -1,0 +1,9 @@
+arm:
+  kinematics_solver: kdl_kinematics_plugin/KDLKinematicsPlugin
+  kinematics_solver_search_resolution: 0.005
+  kinematics_solver_timeout: 0.05
+  position_only_ik: true
+  velocity_scale: 0.5
+  # position_only_ik=true is required for the 5-DOF K12 arm.
+  # KDL cannot satisfy 6-DOF orientation constraints on a 5-DOF chain;
+  # this flag makes it solve only for position, dramatically improving convergence.

@@ -1,0 +1,75 @@
+<?xml version="1.0" ?>
+<!-- This is a semantically rich representation of the robot.
+     It is intended for use with MoveIt. -->
+<robot name="four_wheel">
+
+  <!-- GROUP: 5-DOF arm (all revolute joints from base yaw to wrist roll) -->
+  <group name="arm">
+    <chain base_link="arm_base_link" tip_link="end_effector"/>
+  </group>
+
+  <!-- GROUP: gripper (both fingers driven together via ForwardCommandController) -->
+  <group name="gripper">
+    <joint name="left_gripper_joint"/>
+    <joint name="right_gripper_joint"/>
+  </group>
+
+  <!-- END-EFFECTOR: attaches gripper group to arm tip -->
+  <end_effector name="gripper" parent_link="end_effector" group="gripper" parent_group="arm"/>
+
+  <!-- VIRTUAL JOINT: fixes the robot to the world frame (for planning on mobile base) -->
+  <virtual_joint name="virtual_joint" type="fixed" parent_frame="world" child_link="base_footprint"/>
+
+  <!-- DISABLED COLLISIONS: links that are adjacent or nearly so and can never collide -->
+  <disable_collisions link1="arm_base_link" link2="link1" reason="Adjacent"/>
+  <disable_collisions link1="link1" link2="link2" reason="Adjacent"/>
+  <disable_collisions link1="link2" link2="link3" reason="Adjacent"/>
+  <disable_collisions link1="link3" link2="link4" reason="Adjacent"/>
+  <disable_collisions link1="link4" link2="link5" reason="Adjacent"/>
+  <disable_collisions link1="link5" link2="end_effector" reason="Adjacent"/>
+  <disable_collisions link1="end_effector" link2="left_gripper" reason="Adjacent"/>
+  <disable_collisions link1="end_effector" link2="right_gripper" reason="Adjacent"/>
+  <disable_collisions link1="left_gripper" link2="right_gripper" reason="Adjacent"/>
+  <disable_collisions link1="arm_base_link" link2="link2" reason="Never"/>
+  <disable_collisions link1="arm_base_link" link2="link3" reason="Never"/>
+  <disable_collisions link1="arm_base_link" link2="link4" reason="Never"/>
+  <disable_collisions link1="arm_base_link" link2="link5" reason="Never"/>
+  <disable_collisions link1="arm_base_link" link2="end_effector" reason="Never"/>
+  <disable_collisions link1="link1" link2="link3" reason="Never"/>
+  <disable_collisions link1="link1" link2="link4" reason="Never"/>
+  <disable_collisions link1="link1" link2="link5" reason="Never"/>
+  <disable_collisions link1="link2" link2="link4" reason="Never"/>
+  <disable_collisions link1="link2" link2="link5" reason="Never"/>
+  <disable_collisions link1="link3" link2="link5" reason="Never"/>
+
+  <!-- STATE: known arm configuration for home -->
+  <group_state name="home" group="arm">
+    <joint name="arm_base_yaw_joint" value="0.0"/>
+    <joint name="arm_shoulder_pitch_joint" value="-1.35"/>
+    <joint name="arm_elbow_pitch_joint" value="2.20"/>
+    <joint name="arm_wrist_pitch_joint" value="-0.85"/>
+    <joint name="arm_wrist_roll_joint" value="0.0"/>
+  </group_state>
+
+  <!-- STATE: arm ready (retracted, safe for transport) -->
+  <group_state name="ready" group="arm">
+    <joint name="arm_base_yaw_joint" value="0.0"/>
+    <joint name="arm_shoulder_pitch_joint" value="-0.5"/>
+    <joint name="arm_elbow_pitch_joint" value="1.0"/>
+    <joint name="arm_wrist_pitch_joint" value="-0.5"/>
+    <joint name="arm_wrist_roll_joint" value="0.0"/>
+  </group_state>
+
+  <!-- STATE: gripper fully open -->
+  <group_state name="open" group="gripper">
+    <joint name="left_gripper_joint" value="0.0394875"/>
+    <joint name="right_gripper_joint" value="0.0394875"/>
+  </group_state>
+
+  <!-- STATE: gripper fully closed -->
+  <group_state name="closed" group="gripper">
+    <joint name="left_gripper_joint" value="0.0"/>
+    <joint name="right_gripper_joint" value="0.0"/>
+  </group_state>
+
+</robot>

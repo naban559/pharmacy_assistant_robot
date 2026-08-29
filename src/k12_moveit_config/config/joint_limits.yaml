@@ -1,0 +1,50 @@
+# Joint limits from URDF (k12_arm)
+# These match the <limit> tags in arm.xacro exactly.
+joint_limits:
+  arm_base_yaw_joint:
+    has_velocity_limits: true
+    max_velocity: 1.20
+    has_acceleration_limits: true
+    max_acceleration: 3.0
+    min_position: -2.70
+    max_position: 2.70
+  arm_shoulder_pitch_joint:
+    has_velocity_limits: true
+    max_velocity: 0.90
+    has_acceleration_limits: true
+    max_acceleration: 2.5
+    min_position: -1.75
+    max_position: 1.45
+  arm_elbow_pitch_joint:
+    has_velocity_limits: true
+    max_velocity: 1.10
+    has_acceleration_limits: true
+    max_acceleration: 3.0
+    min_position: -2.45
+    max_position: 2.45
+  arm_wrist_pitch_joint:
+    has_velocity_limits: true
+    max_velocity: 1.50
+    has_acceleration_limits: true
+    max_acceleration: 4.0
+    min_position: -1.90
+    max_position: 1.90
+  arm_wrist_roll_joint:
+    has_velocity_limits: true
+    max_velocity: 2.00
+    has_acceleration_limits: true
+    max_acceleration: 5.0
+    min_position: -3.14159
+    max_position: 3.14159
+  left_gripper_joint:
+    has_velocity_limits: true
+    max_velocity: 0.10
+    has_acceleration_limits: false
+    min_position: 0.0
+    max_position: 0.0394875
+  right_gripper_joint:
+    has_velocity_limits: true
+    max_velocity: 0.10
+    has_acceleration_limits: false
+    min_position: 0.0
+    max_position: 0.0394875
