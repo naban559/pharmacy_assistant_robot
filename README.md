@@ -1,5 +1,6 @@
-# K12 AMMS — Autonomous Mobile Manipulator System
-## ROS 2 Humble + Ignition Gazebo + MoveIt 2 Pick-and-Place Pipeline
+# PHARMACY ASSISTANT ROBOT
+## Autonomous Mobile Manipulator System (AMMS)
+### ROS 2 Humble + Ignition Gazebo + MoveIt 2 Pick-and-Place Pipeline
 
 > **Maintainer**: nabhan (naban559@gmail.com)  
 > **Robot Domain**: `ROS_DOMAIN_ID=77`  
@@ -30,7 +31,7 @@
 
 ## 1. System Overview
 
-The **K12 AMMS** (Autonomous Mobile Manipulator System) is an integrated mobile manipulation platform designed for automated sorting and pick-and-place operations in robotics arenas and pharmacy environments.
+The **PHARMACY ASSISTANT ROBOT** (Autonomous Mobile Manipulator System — AMMS) is an integrated mobile manipulation platform designed for automated sorting and pick-and-place operations in robotics arenas and pharmacy environments.
 
 ```
        [ 2D LiDAR ]           [ RGB-D Depth Camera ]
