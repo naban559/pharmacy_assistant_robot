@@ -1,0 +1,118 @@
+# ============================================================
+# gz_bridge.yaml — ros_gz_bridge topic mapping
+# Bridges Ignition Gazebo topics ↔ ROS 2 topics.
+#
+# IMPORTANT (use_ros2_control=true mode):
+#   When ros2_control is active the following are published
+#   DIRECTLY to ROS by the controllers — NO bridge needed:
+#     • odom         → diff_drive_controller (diff_cont)
+#     • tf           → diff_drive_controller (diff_cont)
+#     • joint_states → joint_state_broadcaster (joint_broad)
+#     • cmd_vel      → twist_mux → diff_cont (pure ROS path)
+#   Those entries have been REMOVED from this file.
+# ============================================================
+
+# ── Gazebo World Poses ───────────────────────────────────────────────────
+- ros_topic_name: "gazebo/pose_info"
+  gz_topic_name:  "/world/robotics_arena/pose/info"
+  ros_type_name:  "tf2_msgs/msg/TFMessage"
+  gz_type_name:   "gz.msgs.Pose_V"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "gazebo/dynamic_pose_info"
+  gz_topic_name:  "/world/robotics_arena/dynamic_pose/info"
+  ros_type_name:  "tf2_msgs/msg/TFMessage"
+  gz_type_name:   "gz.msgs.Pose_V"
+  direction: GZ_TO_ROS
+
+# ── Simulation clock ─────────────────────────────────────────────────────
+# UNCHANGED: always required so ROS nodes see simulation time.
+- ros_topic_name: "clock"
+  gz_topic_name:  "clock"
+  ros_type_name:  "rosgraph_msgs/msg/Clock"
+  gz_type_name:   "gz.msgs.Clock"
+  direction: GZ_TO_ROS
+
+# ── LiDAR (lidar_1 sensor) ───────────────────────────────────────────────
+# UNCHANGED: sensor type changed to gpu_lidar in four_wheel.gazebo,
+# but the topic name "scan" and message type are the same.
+- ros_topic_name: "scan"
+  gz_topic_name:  "scan"
+  ros_type_name:  "sensor_msgs/msg/LaserScan"
+  gz_type_name:   "gz.msgs.LaserScan"
+  direction: GZ_TO_ROS
+
+# ── Ultrasonic front sensor (ultra_front_1) ──────────────────────────────
+# ADDED: new entry for the front ultrasonic sensor.
+# In four_wheel.gazebo the sensor was converted from ray→gpu_lidar
+# and publishes on "ultra_front/scan". Bridge it to ROS as LaserScan.
+# Use ros_gz_bridge range_sensor_bridge or downstream node to convert
+# to sensor_msgs/Range if your application requires it.
+- ros_topic_name: "ultra_front/scan"
+  gz_topic_name:  "ultra_front/scan"
+  ros_type_name:  "sensor_msgs/msg/LaserScan"
+  gz_type_name:   "gz.msgs.LaserScan"
+  direction: GZ_TO_ROS
+
+# ── Ultrasonic rear sensor (ultra_rear_1) ────────────────────────────────
+# ADDED: same pattern as ultra_front. Sensor publishes on "ultra_rear/scan".
+- ros_topic_name: "ultra_rear/scan"
+  gz_topic_name:  "ultra_rear/scan"
+  ros_type_name:  "sensor_msgs/msg/LaserScan"
+  gz_type_name:   "gz.msgs.LaserScan"
+  direction: GZ_TO_ROS
+
+# ── RGBD camera (camera_1 sensor) ─────────────────────────────────────────
+# CHANGED: sensor is now type="rgbd_camera" on topic "camera/depth_camera"
+# (see four_wheel.gazebo). Camera info bridges here; color/depth/points
+# images are bridged by ros_gz_image in the launch file instead, since
+# image topics need ros_gz_image (not the plain parameter_bridge) for
+# correct message conversion.
+- ros_topic_name: "camera/depth_camera/camera_info"
+  gz_topic_name:  "camera/depth_camera/camera_info"
+  ros_type_name:  "sensor_msgs/msg/CameraInfo"
+  gz_type_name:   "gz.msgs.CameraInfo"
+  direction: GZ_TO_ROS
+
+- ros_topic_name: "camera/depth_camera/points"
+  gz_topic_name:  "camera/depth_camera/points"
+  ros_type_name:  "sensor_msgs/msg/PointCloud2"
+  gz_type_name:   "gz.msgs.PointCloudPacked"
+  direction: GZ_TO_ROS
+
+# ── IMU sensor ───────────────────────────────────────────────────────────
+# UNCHANGED: imu sensor topic set in four_wheel.gazebo (if imu_link is added)
+# or in a separate imu xacro. Topic name matches <topic>imu</topic>.
+- ros_topic_name: "imu"
+  gz_topic_name:  "imu"
+  ros_type_name:  "sensor_msgs/msg/Imu"
+  gz_type_name:   "gz.msgs.IMU"
+  direction: GZ_TO_ROS
+
+# ── REMOVED entries (handled by ros2_control, no bridge needed) ──────────
+#
+# REMOVED — odom:
+#   diff_drive_controller (diff_cont) publishes /diff_cont/odom directly.
+# - ros_topic_name: "odom"
+#   gz_topic_name:  "odom"
+#   ...
+#
+# REMOVED — tf:
+#   diff_drive_controller publishes /tf directly (enable_odom_tf=false,
+#   so EKF publishes odom→base_link; gz_ros2_control publishes joint TF).
+# - ros_topic_name: "tf"
+#   gz_topic_name:  "tf"
+#   ...
+#
+# REMOVED — joint_states:
+#   joint_state_broadcaster (joint_broad) publishes /joint_states directly.
+# - ros_topic_name: "joint_states"
+#   gz_topic_name:  "joint_states"
+#   ...
+#
+# REMOVED — diff_cont/cmd_vel_unstamped → cmd_vel:
+#   twist_mux → /diff_cont/cmd_vel_unstamped → diff_cont (pure ROS path,
+#   no Gz involvement when ros2_control is active).
+# - ros_topic_name: "diff_cont/cmd_vel_unstamped"
+#   gz_topic_name:  "cmd_vel"
+#   ...

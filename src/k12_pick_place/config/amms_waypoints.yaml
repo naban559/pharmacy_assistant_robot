@@ -1,0 +1,98 @@
+amms_waypoint_manager:
+  ros__parameters:
+    use_sim_time: true
+    frame_id: map
+    waypoint_names: [home, pickup_point_1_red, pickup_point_2_green, pickup_point_3_blue, pick_clear, place_approach, place_station_approach, place_station, place_clear]
+    waypoint_home: [0.0, 0.0, 0.0]
+    waypoint_pickup_point_1_red: [-3.0, 1.95, 1.570796]
+    waypoint_pickup_point_2_green: [0.0, 1.95, 1.570796]
+    waypoint_pickup_point_3_blue: [3.0, 1.95, 1.570796]
+    waypoint_pick_clear: [0.0, 1.50, 1.570796]
+    waypoint_place_approach: [0.0, -1.50, -1.570796]
+    waypoint_place_station_approach: [0.0, -1.90, -1.570796]
+    waypoint_place_station: [0.0, -2.25, -1.570796]
+    waypoint_place_clear: [0.0, -1.50, 1.570796]
+    pose_array_topic: /amms/waypoints
+    marker_topic: /amms/waypoint_markers
+    publish_period_sec: 1.0
+
+amms_task_manager:
+  ros__parameters:
+    use_sim_time: true
+    use_navigation: true
+    frame_id: map
+    base_frame: base_link
+    detections_topic: /amms/detections
+    pick_target_topic: /amms/pick_target
+    task_state_topic: /amms/task_state
+    nav_action_name: navigate_to_pose
+    backup_action_name: backup
+    pick_service: /amms/pick_object
+    place_service: /amms/place_object
+    fold_arm_service: /amms/fold_arm
+    scan_topic: /scan
+    waypoint_names: [home, pickup_point_1_red, pickup_point_2_green, pickup_point_3_blue, pick_clear, place_approach, place_station_approach, place_station, place_clear]
+    waypoint_home: [0.0, 0.0, 0.0]
+    waypoint_pickup_point_1_red: [-3.0, 1.95, 1.570796]
+    waypoint_pickup_point_2_green: [0.0, 1.95, 1.570796]
+    waypoint_pickup_point_3_blue: [3.0, 1.95, 1.570796]
+    waypoint_pick_clear: [0.0, 1.50, 1.570796]
+    waypoint_place_approach: [0.0, -1.50, -1.570796]
+    waypoint_place_station_approach: [0.0, -1.90, -1.570796]
+    waypoint_place_station: [0.0, -2.25, -1.570796]
+    waypoint_place_clear: [0.0, -1.50, 1.570796]
+    enable_final_alignment: false
+    object_target_frame: arm_base_link
+    object_reachable_min_radius: 0.14
+    object_reachable_max_radius: 0.390
+    object_reachable_min_z: -0.31
+    object_reachable_max_z: 0.23
+    object_grasp_forward_offset: 0.0
+    object_grasp_z_bias: 0.010
+    object_grasp_surface_to_center_offset: 0.0125
+    # Leaves 4 cm nominal wheel/table clearance while retaining full arm reach.
+    object_nav_standoff_distance: 0.445
+    max_reposition_attempts: 2
+    max_object_failures: 4
+    require_reachable_before_pick_service: true
+    pre_pick_detection_required: true
+    pick_retry_count: 3
+    pick_retry_wait_sec: 0.3
+    detection_timeout_sec: 45.0
+    detection_freshness_sec: 2.0
+    fresh_detection_after_move_timeout_sec: 10.0
+    min_detection_confidence: 0.10
+    place_position_arm_base: [0.310, 0.0, -0.0725]
+    place_slot_reach_adjustments_x: [0.0, -0.026, -0.053, -0.079]
+    nav_timeout_sec: 150.0
+    nav_arrival_xy_tolerance_m: 0.16
+    nav_arrival_yaw_tolerance_rad: 0.20
+    docking_arrival_xy_tolerance_m: 0.035
+    docking_arrival_yaw_tolerance_rad: 0.03
+    post_navigation_settle_sec: 0.5
+    nav_retry_count: 3
+    nav_retry_wait_sec: 0.5
+    post_pick_backup_enabled: true
+    post_pick_backup_distance: 0.5
+    post_pick_backup_speed: 0.06
+    post_pick_backup_timeout_sec: 12.0
+    post_place_backup_enabled: true
+    post_place_backup_distance: 0.35
+    post_place_backup_speed: 0.10
+    post_place_backup_timeout_sec: 10.0
+    nav2_backup_max_segment_distance: 0.20
+    clear_costmaps_on_nav_failure: true
+    local_clear_costmap_service: /local_costmap/clear_entirely_local_costmap
+    global_clear_costmap_service: /global_costmap/clear_entirely_global_costmap
+    obstacle_log_min_range: 0.45
+    service_timeout_sec: 180.0
+    localization_timeout_sec: 3.0
+    startup_timeout_sec: 300.0
+    startup_poll_period_sec: 0.25
+    # Purple station visual alignment
+    purple_station_detection_enabled: true
+    purple_station_rgb_topic: /camera/depth_camera/image
+    purple_hsv_lower: [115, 50, 30]
+    purple_hsv_upper: [165, 255, 255]
+    purple_min_area_px: 200.0
+    purple_detection_timeout_sec: 25.0

@@ -1,9 +1,0 @@
-[console_scripts]
-amms_task_manager = k12_pick_place.amms_task_manager:main
-cloud_to_scan = k12_pick_place.cloud_to_scan:main
-object_detector = k12_pick_place.object_detector:main
-pick_place_commander = k12_pick_place.pick_place_commander:main
-readiness_gate = k12_pick_place.readiness_gate:main
-scene_spawner = k12_pick_place.scene_spawner:main
-waypoint_manager = k12_pick_place.waypoint_manager:main
-

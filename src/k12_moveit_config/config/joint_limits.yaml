@@ -1,0 +1,51 @@
+# Joint limits from URDF (k12_arm / robot_arm_description)
+# These match the <limit> tags in arm.xacro exactly.
+joint_limits:
+  arm_base_yaw_joint:
+    has_velocity_limits: true
+    max_velocity: 3.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0
+    min_position: -1.5708
+    max_position: 1.5708
+  arm_shoulder_pitch_joint:
+    has_velocity_limits: true
+    max_velocity: 3.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0
+    min_position: -1.3614
+    max_position: 1.8500
+  arm_elbow_pitch_joint:
+    has_velocity_limits: true
+    max_velocity: 3.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0
+    min_position: -2.40855
+    max_position: 1.3439
+  arm_wrist_pitch_joint:
+    has_velocity_limits: true
+    max_velocity: 3.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0
+    min_position: -1.7802
+    max_position: 1.7802
+  arm_wrist_roll_joint:
+    has_velocity_limits: true
+    max_velocity: 3.00
+    has_acceleration_limits: true
+    max_acceleration: 5.0
+    min_position: -3.14159
+    max_position: 3.14159
+  left_gripper_joint:
+    has_velocity_limits: true
+    max_velocity: 0.10
+    has_acceleration_limits: false
+    min_position: 0.0
+    max_position: 0.0115
+  right_gripper_joint:
+    has_velocity_limits: true
+    max_velocity: 0.10
+    has_acceleration_limits: false
+    min_position: 0.0
+    max_position: 0.0115
+

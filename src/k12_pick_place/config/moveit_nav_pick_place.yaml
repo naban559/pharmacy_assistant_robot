@@ -1,0 +1,147 @@
+k12_object_detector:
+  ros__parameters:
+    rgb_topic: /camera/depth_camera/image
+    depth_topic: /camera/depth_camera/depth_image
+    camera_info_topic: /camera/depth_camera/camera_info
+    detections_topic: /amms/detections
+    pose_array_topic: /amms/detected_object_poses_camera
+    debug_image_topic: /amms/detection_debug
+    publish_debug_image: true
+    min_area_px: 15.0
+    confidence_area_px: 100.0
+    max_depth_m: 4.5
+    projection_mode: ros_optical
+    fallback_width: 640
+    fallback_height: 480
+    fallback_horizontal_fov: 1.3962634
+    sync_queue_size: 25
+    sync_slop_sec: 0.08
+    min_saturation: 60
+    min_value: 30
+    known_object_shape: cube
+    known_cube_size_m: 0.025
+    allow_fallback_intrinsics: false
+
+moveit_pick_place_commander:
+  ros__parameters:
+    detections_topic: /amms/detections
+    pick_target_topic: /amms/pick_target
+    prefer_external_pick_target: true
+    external_pick_target_timeout_sec: 3.0
+    arm_action_name: /arm_position_controller/follow_joint_trajectory
+    gripper_controller_topic: /gripper_position_controller/commands
+    target_frame: arm_base_link
+    base_frame: base_link
+    tracking_frame: odom
+    place_table_frame: map
+    place_table_position: [0.0, -2.75, 0.0]
+    auto_start: false
+    run_once: false
+    object_timeout_sec: 2.0
+    track_timeout_sec: 30.0
+    min_detection_confidence: 0.10
+    service_requires_fresh_detection: true
+    service_pick_target_timeout_sec: 20.0
+    require_stable_detection: true
+    stable_detection_count: 3
+    stable_detection_position_tolerance_m: 0.04
+    stable_detection_timeout_sec: 10.0
+    approach_distance: 0.05
+    lift_height: 0.12
+    grasp_z_bias: 0.010
+    grasp_forward_offset: 0.0
+    grasp_surface_to_center_offset: 0.0125
+    grasp_close_settle_sec: 0.80
+    max_detection_age_sec: 1.0
+    external_target_match_tolerance_m: 0.05
+    gripper_joint_tolerance_m: 0.0025
+    grasp_object_width_m: 0.025
+    grasp_width_tolerance_m: 0.008
+    grasp_centering_tolerance_m: 0.006
+    verify_placement_with_camera: true
+    placement_verification_timeout_sec: 8.0
+    placement_xy_tolerance_m: 0.060
+    placement_z_tolerance_m: 0.035
+    open_gripper_width: 0.0115
+    closed_gripper_width: 0.0
+    use_gazebo_grasp_assist: false
+    require_verified_grasp_attachment: true
+    grasp_assist_backend: gazebo_state
+    gazebo_set_entity_state_service: /set_entity_state
+    gazebo_get_entity_state_service: /get_entity_state
+    gazebo_get_link_properties_service: /get_link_properties
+    gazebo_set_link_properties_service: /set_link_properties
+    use_gazebo_truth_fallback: false
+    gazebo_truth_frame: map
+    disable_gravity_while_holding: true
+    use_live_grasp_offset: true
+    held_object_offset_end_effector: [0.055, 0.0, 0.0]
+    held_object_reference_frame: 'k12_amms::end_effector'
+    held_object_orientation_follows_gripper: true
+    max_live_grasp_offset_m: 0.950625
+    release_object_z_bias: 0.0
+    release_upright_orientation: true
+    snap_release_to_table_center: true
+    place_table_release_height: 0.1315
+    place_table_top_z: 0.10
+    release_clearance: 0.004
+    release_cube_height: 0.025
+    release_cylinder_height: 0.025
+    release_block_height: 0.025
+    place_table_release_xy_offset: [0.0, 0.11]
+    place_table_release_red_cube_xy_offset: [-0.08, 0.0]
+    place_table_release_green_cylinder_xy_offset: [0.0, 0.0]
+    place_table_release_blue_block_xy_offset: [0.08, 0.0]
+    place_slot_reach_adjustments_x: [0.0, -0.026325, -0.05265, -0.078975]
+    release_settle_before_open_sec: 0.15
+    hold_object_during_place_open: true
+    place_contact_settle_sec: 0.60
+    place_lift_height: 0.078975
+    place_retreat_lift_height: 0.078975
+    place_retreat_steps: 4
+    place_retreat_step_duration_sec: 0.50
+    held_object_update_period_sec: 0.02
+    held_object_request_timeout_sec: 0.03
+    held_object_update_wait_sec: 0.02
+    held_gripper_republish_sec: 0.05
+    pick_service: /amms/pick_object
+    place_service: /amms/place_object
+    fold_arm_service: /amms/fold_arm
+    home_joints: [0.0, -0.45, 0.90, -0.45, 0.0]
+    carry_joints: [0.0, -0.45, 0.90, -0.45, 0.0]
+    place_position_arm_base: [0.325, 0.0, -0.0725]
+    reachable_min_radius: 0.1447875
+    reachable_max_radius: 0.658125
+    reachable_min_z: -0.307125
+    reachable_max_z: 0.23034375
+    allow_best_effort_grasp: false
+    best_effort_max_radius: 0.78975
+    base_approach_enabled: false
+    base_approach_max_distance_m: 1.5
+    base_approach_step_m: 0.05
+    base_approach_linear_speed: 0.15
+    base_approach_step_duration_sec: 0.4
+    base_approach_settling_sec: 1.0
+    cmd_vel_topic: /cmd_vel
+    move_group_name: arm
+    move_group_planning_time: 10.0
+    move_group_velocity_scale: 0.5
+    move_group_acceleration_scale: 0.5
+    move_group_num_planning_attempts: 10
+    move_group_goal_orientation_tolerance: 0.1
+    move_group_goal_position_tolerance: 0.01
+    place_platform_thickness: 0.015
+    planning_scene_boxes: [
+      -3.0, 2.75, 0.05, 0.30, 0.30, 0.10,
+       0.0, 2.75, 0.05, 0.30, 0.30, 0.10,
+       3.0, 2.75, 0.05, 0.30, 0.30, 0.10,
+       0.0, -2.75, 0.05, 0.30, 0.30, 0.10,
+      -0.08, -2.64, 0.1075, 0.06, 0.06, 0.015,
+       0.00, -2.64, 0.1075, 0.06, 0.06, 0.015,
+       0.08, -2.64, 0.1075, 0.06, 0.06, 0.015,
+       0.0, 0.0, -0.025, 9.0, 6.0, 0.05,
+      -4.45, 0.0, 0.20, 0.10, 6.0, 0.40,
+       4.45, 0.0, 0.20, 0.10, 6.0, 0.40,
+       0.0, 2.95, 0.20, 9.0, 0.10, 0.40,
+       0.0, -2.95, 0.20, 9.0, 0.10, 0.40
+    ]

@@ -1,0 +1,27 @@
+# Colcon and build directories
+build/
+install/
+log/
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pytest_cache/
+.pytest_cache/
+
+# Editor and OS files
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+
+# Archives and backup files
+*.zip
+*.tar.gz
+*.tar
+*.bak
+
+# Validation directory and logs
+validation/

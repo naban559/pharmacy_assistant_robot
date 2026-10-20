@@ -1,0 +1,421 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <world name="robotics_arena">
+
+    <gravity>0 0 -9.81</gravity>
+
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
+    <plugin filename="gz-sim-contact-system" name="gz::sim::systems::Contact"/>
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 50 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <!-- =========================================================
+         ARENA
+         Overall arena footprint: 9.00 m wide (X) x 6.00 m long (Y)
+         Wall thickness: 0.10 m
+         Wall height: 0.40 m
+         Floor thickness: 0.05 m
+         ========================================================= -->
+
+    <!-- Floor -->
+    <model name="arena_floor">
+      <static>true</static>
+      <pose>0 0 -0.025 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>9.0 6.0 0.05</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>9.0 6.0 0.05</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.18 0.18 0.18 1</ambient>
+            <diffuse>0.25 0.25 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Left wall -->
+    <model name="wall_left">
+      <static>true</static>
+      <pose>-4.45 0 0.20 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.10 6.0 0.40</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.10 6.0 0.40</size></box></geometry>
+          <material>
+            <ambient>0.30 0.30 0.30 1</ambient>
+            <diffuse>0.38 0.38 0.38 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Right wall -->
+    <model name="wall_right">
+      <static>true</static>
+      <pose>4.45 0 0.20 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.10 6.0 0.40</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.10 6.0 0.40</size></box></geometry>
+          <material>
+            <ambient>0.30 0.30 0.30 1</ambient>
+            <diffuse>0.38 0.38 0.38 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Back wall: pickup platforms touch the inner face of this wall -->
+    <model name="wall_back">
+      <static>true</static>
+      <pose>0 2.95 0.20 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>9.0 0.10 0.40</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>9.0 0.10 0.40</size></box></geometry>
+          <material>
+            <ambient>0.30 0.30 0.30 1</ambient>
+            <diffuse>0.38 0.38 0.38 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Front wall: single continuous wall identical to back wall -->
+    <model name="wall_front">
+      <static>true</static>
+      <pose>0 -2.95 0.20 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>9.0 0.10 0.40</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>9.0 0.10 0.40</size></box></geometry>
+          <material>
+            <ambient>0.30 0.30 0.30 1</ambient>
+            <diffuse>0.38 0.38 0.38 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- =========================================================
+         PICKUP PLATFORMS
+         Size: 0.30 x 0.30 x 0.10 m
+         Mounted directly against the inside face of back wall (zero gap).
+         Positioned at Y = 2.75 m (rear edge touches inside wall face at Y = 2.90 m).
+         Distributed across the 9.00 m width at X = -3.00 m, 0.00 m, +3.00 m.
+         ========================================================= -->
+
+    <!-- Pickup 1: Red -->
+    <model name="pickup_point_1_red">
+      <static>true</static>
+      <pose>-3.00 2.75 0.05 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.30 0.30 0.10</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.30 0.30 0.10</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.65 0.65 0.65 1</ambient>
+            <diffuse>0.75 0.75 0.75 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="cube_red">
+      <static>false</static>
+      <!-- Cube center coincides with the platform center; bottom rests at Z=0.10. -->
+      <pose>-3.00 2.75 0.1125 0 0 0</pose>
+
+      <link name="link">
+        <inertial>
+          <mass>0.020</mass>
+          <inertia>
+            <ixx>0.00000208</ixx>
+            <ixy>0.0</ixy>
+            <ixz>0.0</ixz>
+            <iyy>0.00000208</iyy>
+            <iyz>0.0</iyz>
+            <izz>0.00000208</izz>
+          </inertia>
+        </inertial>
+
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.025 0.025 0.025</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.025 0.025 0.025</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.8 0.02 0.02 1</ambient>
+            <diffuse>0.9 0.02 0.02 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Pickup 2: Green -->
+    <model name="pickup_point_2_green">
+      <static>true</static>
+      <pose>0 2.75 0.05 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.30 0.30 0.10</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.30 0.30 0.10</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.65 0.65 0.65 1</ambient>
+            <diffuse>0.75 0.75 0.75 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="cube_green">
+      <static>false</static>
+      <pose>0 2.75 0.1125 0 0 0</pose>
+
+      <link name="link">
+        <inertial>
+          <mass>0.020</mass>
+          <inertia>
+            <ixx>0.00000208</ixx>
+            <ixy>0.0</ixy>
+            <ixz>0.0</ixz>
+            <iyy>0.00000208</iyy>
+            <iyz>0.0</iyz>
+            <izz>0.00000208</izz>
+          </inertia>
+        </inertial>
+
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.025 0.025 0.025</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.025 0.025 0.025</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.02 0.75 0.02 1</ambient>
+            <diffuse>0.02 0.85 0.02 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Pickup 3: Blue -->
+    <model name="pickup_point_3_blue">
+      <static>true</static>
+      <pose>3.00 2.75 0.05 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.30 0.30 0.10</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.30 0.30 0.10</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.65 0.65 0.65 1</ambient>
+            <diffuse>0.75 0.75 0.75 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="cube_blue">
+      <static>false</static>
+      <pose>3.00 2.75 0.1125 0 0 0</pose>
+
+      <link name="link">
+        <inertial>
+          <mass>0.020</mass>
+          <inertia>
+            <ixx>0.00000208</ixx>
+            <ixy>0.0</ixy>
+            <ixz>0.0</ixz>
+            <iyy>0.00000208</iyy>
+            <iyz>0.0</iyz>
+            <izz>0.00000208</izz>
+          </inertia>
+        </inertial>
+
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.025 0.025 0.025</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.025 0.025 0.025</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.02 0.02 0.85 1</ambient>
+            <diffuse>0.02 0.02 0.95 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- =========================================================
+         PLACING STATION
+         Size: 0.30 x 0.30 x 0.10 m (identical to the pickup platforms).
+         Centered against the front wall at X = 0.00 m.
+         Mounted directly against inside face of front wall (zero gap).
+         Positioned at Y = -2.75 m (front edge touches inside wall face at Y = -2.90 m).
+         ========================================================= -->
+    <model name="placing_station">
+      <static>true</static>
+      <pose>0 -2.75 0.05 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.30 0.30 0.10</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.30 0.30 0.10</size></box></geometry>
+          <material>
+            <ambient>0.45 0.25 0.65 1</ambient>
+            <diffuse>0.55 0.30 0.75 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Elevated placing platform: RED (1.5 cm thick, elevated above purple surface) -->
+    <model name="placing_platform_red">
+      <static>true</static>
+      <pose>-0.08 -2.64 0.1075 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.06 0.06 0.015</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.06 0.06 0.015</size></box></geometry>
+          <material>
+            <ambient>0.85 0.02 0.02 1</ambient>
+            <diffuse>0.95 0.02 0.02 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Elevated placing platform: GREEN (1.5 cm thick, elevated above purple surface) -->
+    <model name="placing_platform_green">
+      <static>true</static>
+      <pose>0.00 -2.64 0.1075 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.06 0.06 0.015</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.06 0.06 0.015</size></box></geometry>
+          <material>
+            <ambient>0.02 0.80 0.02 1</ambient>
+            <diffuse>0.02 0.90 0.02 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Elevated placing platform: BLUE (1.5 cm thick, elevated above purple surface) -->
+    <model name="placing_platform_blue">
+      <static>true</static>
+      <pose>0.08 -2.64 0.1075 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.06 0.06 0.015</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.06 0.06 0.015</size></box></geometry>
+          <material>
+            <ambient>0.02 0.02 0.85 1</ambient>
+            <diffuse>0.02 0.02 0.95 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+  </world>
+</sdf>
