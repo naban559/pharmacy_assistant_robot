@@ -1,474 +1,274 @@
-# PHARMACY ASSISTANT ROBOT
-## Autonomous Mobile Manipulator System (AMMS)
-### ROS 2 Humble + Ignition Gazebo + MoveIt 2 Pick-and-Place Pipeline
+<div align="center">
 
-> **Maintainer**: nabhan (naban559@gmail.com)  
-> **Robot Domain**: `ROS_DOMAIN_ID=77`  
-> **Simulation**: Ignition Gazebo (Gazebo Sim Fortress / Sim 6)  
-> **ROS Distribution**: ROS 2 Humble Hawksbill  
-> **Planning & Navigation**: MoveIt 2 (OMPL / KDL) + Nav2 (AMCL / DWB)
+# Pharmacy Assistant Robot
 
----
+### Autonomous Mobile Manipulator | ROS 2 · MoveIt 2 · Nav2 · Gazebo Sim
 
-## Table of Contents
-1. [System Overview](#1-system-overview)
-2. [Workspace Architecture](#2-workspace-architecture)
-3. [Package Breakdown](#3-package-breakdown)
-   - [3.1 k12_pick_place](#31-k12_pick_place)
-   - [3.2 articubot_one_with_arm](#32-articubot_one_with_arm)
-   - [3.3 k12_moveit_config](#33-k12_moveit_config)
-   - [3.4 robot_arm_description](#34-robot_arm_description)
-   - [3.5 ROSArduinoBridge_BTS7960](#35-rosarduinobridge_bts7960)
-4. [Simulation Environment (og.world)](#4-simulation-environment-ogworld)
-5. [Autonomous Missions & Operator CLI](#5-autonomous-missions--operator-cli)
-6. [Manipulation, MoveIt 2 & Physical Verification](#6-manipulation-moveit-2--physical-verification)
-7. [Navigation & Precise Docking Architecture](#7-navigation--precise-docking-architecture)
-8. [System Interconnection & Data Flow](#8-system-interconnection--data-flow)
-9. [How to Build and Run](#9-how-to-build-and-run)
-10. [Tuning & Configuration Reference](#10-tuning--configuration-reference)
+**A four-wheel differential-drive robot equipped with a custom 5-DOF manipulator, RGB-D perception, and an autonomous colour-based pick-and-place workflow.**
 
----
+[![ROS 2](https://img.shields.io/badge/ROS%202-Humble-22314E?logo=ros&logoColor=white)](https://docs.ros.org/en/humble/)
+[![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04-E95420?logo=ubuntu&logoColor=white)](https://ubuntu.com/)
+[![MoveIt 2](https://img.shields.io/badge/Manipulation-MoveIt%202-3776AB)](https://moveit.picknik.ai/)
+[![Gazebo](https://img.shields.io/badge/Simulation-Gazebo%20Fortress-646CFF)](https://gazebosim.org/)
+[![Python](https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 
-## 1. System Overview
+</div>
 
-The **PHARMACY ASSISTANT ROBOT** (Autonomous Mobile Manipulator System — AMMS) is an integrated mobile manipulation platform designed for automated sorting and pick-and-place operations in robotics arenas and pharmacy environments.
+> **Development status:** Simulation-focused research and development. Autonomous pickup, navigation, and colour-specific placement are implemented; repeatable physically verified placement across all three colours is an ongoing validation goal. Passing unit tests alone does not certify successful placement.
 
-```
-       [ 2D LiDAR ]           [ RGB-D Depth Camera ]
-            │                           │
-  ┌─────────┴───────────────────────────┴─────────┐
-  │         5-DOF Articulated Robotic Arm         │
-  │        with Parallel Jaw Gripper (MoveIt 2)   │
-  ├───────────────────────────────────────────────┤
-  │                                               │
-  │       4-Wheeled Differential Drive Base       │
-  │          Nav2 Stack + EKF Sensor Fusion       │
-  └───────────────────────┬───────────────────────┘
-                          │
-              [ Wheel Encoders + IMU ]
-```
+<!-- Add an actual robot screenshot or demonstration GIF here when available:
+![Pharmacy Assistant Robot in Gazebo](docs/images/robot_demo.gif)
+-->
 
-### Key Capabilities
-- **Multi-Station Autonomous Pick**: Navigates autonomously to one of three pickup stations across the arena (Red, Green, Blue) using Nav2 costmaps and AMCL localization.
-- **Perception & Grasping**: Detects colored target blocks using an RGB-D depth camera, computes analytical or MoveIt collision-free grasp trajectories, grasps the block with a parallel gripper, and transitions to a compact carry posture.
-- **Two-Stage Precise Docking**: Approaches the central placing station via a staged staging waypoint `(0.00, -1.90)`, aligns its yaw heading perpendicular to the table, and rolls forward into the docking position `(0.00, -2.25)`.
-- **Targeted Surface Placement**: Deposits the picked block onto its designated elevated platform (Red, Green, or Blue) mounted on a purple placement table.
-- **Strict Ground-Truth Physical Verification**: Enforces physics-based settlement checks via Gazebo Sim pose streaming before releasing the object and before retracting the arm, preventing unguided drops or premature departures.
-- **Interactive Operator Control**: Exposes ROS 2 Trigger services (`/amms/goto_a`, `/amms/goto_b`, `/amms/goto_c`, `/amms/goto_d`) and an interactive CLI (`ros2 run k12_pick_place amms_command`).
+## Overview
 
----
+The **Pharmacy Assistant Robot**, also referred to as the **Autonomous Mobile Manipulator System (AMMS)**, combines autonomous mobile navigation with robotic manipulation. The robot navigates to a pickup station, detects a coloured object, uses its 5-DOF arm and gripper to pick it up, transports it to a central placing station, and attempts to deposit it onto the matching elevated platform.
 
-## 2. Workspace Architecture
+The current design replaces an earlier block-style arm with a more realistic articulated robot arm. The updated software integrates **MoveIt 2 motion planning**, **RGB-D colour detection**, and a dedicated **purple placing station with red, green, and blue targets**.
 
-All software packages reside directly in `/home/nabhan/try_18/src/`:
+### Features
 
-```
-/home/nabhan/try_18/
-├── src/
-│   ├── articubot_one_with_arm/     → Robot URDF/Xacro, Gazebo plugins, og.world
-│   ├── k12_pick_place/             → Mission FSM, MoveIt commander, perception, docking
-│   ├── k12_moveit_config/          → MoveIt 2 SRDF, OMPL kinematics & collision setup
-│   ├── robot_arm_description/      → 5-DOF arm kinematics, STL meshes & offline tools
-│   └── ROSArduinoBridge_BTS7960/   → Physical robot Arduino firmware (BTS7960 + encoders)
-├── build/                          → (Excluded from git) Colcon build workspace
-├── install/                        → (Excluded from git) Colcon install overlay
-├── log/                            → (Excluded from git) Build and runtime logs
-├── .gitignore                      → Git exclusions for build, logs, and archives
-└── README.md                       → This comprehensive documentation
+- **Custom 5-DOF arm:** base yaw, shoulder pitch, elbow pitch, wrist pitch, and wrist roll, plus a parallel-jaw gripper.
+- **MoveIt 2 manipulation:** planning scene, inverse kinematics, collision-aware trajectory planning, and joint trajectory execution.
+- **Autonomous navigation:** Nav2, AMCL localization, global/local costmaps, and precise station approach logic.
+- **Perception:** RGB-D camera-based colour segmentation and 3D object localization for picking.
+- **Sensor fusion:** wheel odometry and IMU measurements fused by `robot_localization` EKF.
+- **Gazebo Sim:** robot description, sensors, actuators, arena, pickup stations, and colour-specific placement platforms.
+- **Mission control:** ROS 2 services and an interactive command-line interface.
+- **Placement validation:** Gazebo-based observation and support-checking logic under development and testing.
+
+## System architecture
+
+```text
+                        PHARMACY ASSISTANT ROBOT
+                                   |
+         +-------------------------+-------------------------+
+         |                         |                         |
+    RGB-D Camera               2D LiDAR               Wheel Encoders
+         |                         |                       + IMU
+  Colour Detection           Nav2 / AMCL                    |
+  3D Object Position      Path Planning / Docking      EKF Odometry
+         |                         |                         |
+         +-------------------------+-------------------------+
+                                   |
+                            AMMS Task Manager
+                        (mission state machine)
+                                   |
+                           MoveIt 2 Commander
+                     IK / planning / collision checks
+                                   |
+                     5-DOF Arm + Parallel Gripper
+                                   |
+                        Pick -> Carry -> Place
+                                   |
+                        Gazebo Pose Observation
+                      Placement Support Verification
 ```
 
-### Environment Setup
-Before launching or building, source both ROS 2 Humble and the workspace overlay:
-```bash
-source /opt/ros/humble/setup.bash
-source /home/nabhan/try_18/install/setup.bash
-export ROS_DOMAIN_ID=77
-```
+### Main technologies
 
----
+| Layer | Technologies |
+|---|---|
+| Operating system | Ubuntu 22.04 |
+| Robotics middleware | ROS 2 Humble |
+| Simulation | Gazebo Sim / Ignition Gazebo Fortress |
+| Arm manipulation | MoveIt 2, OMPL, KDL, analytical IK helpers |
+| Navigation | Nav2, AMCL, DWB controller |
+| Perception | RGB-D camera, OpenCV colour segmentation |
+| State estimation | `robot_localization` EKF, IMU, wheel odometry |
+| Controllers | `ros2_control`, differential-drive and joint-trajectory controllers |
+| Languages | Python, C++, Arduino firmware |
 
-## 3. Package Breakdown
+## Robot design
 
-### 3.1 `k12_pick_place`
+**Mobile base:** four-wheel differential-drive platform with LiDAR, wheel encoders, IMU, and an RGB-D camera.
 
-**Type**: Python package (`ament_python`)  
-**Maintainer**: vijay (`vijaykumargorli2003@gmail.com`) / nabhan  
-**Role**: Master orchestration, perception pipeline, MoveIt 2 manipulation interface, station docking, and physical verification.
+**Manipulator:** five revolute degrees of freedom with a parallel-jaw gripper. Its geometry and joints are defined in URDF/Xacro, with separate MoveIt 2 configuration for planning and execution. Arm motion is sent to `/arm_position_controller/follow_joint_trajectory`.
 
-#### Key Modules & Scripts
-| Module | Executable Name | Role |
+**Manipulation workflow:** the camera provides an object estimate; the task manager selects the target; the arm plans an approach and grasp; the robot carries the object; then the placer computes an approach, descent, release, and retreat. Collision checking and feedback are used to reduce unsafe or inconsistent motions.
+
+## Simulation environment
+
+The `robotics_arena` world is defined in `src/articubot_one_with_arm/worlds/og.world`. It includes three pickup stations and a central **purple placement station** with three elevated, colour-coded platforms.
+
+| Mission | Pickup object | Destination |
 |---|---|---|
-| `amms_task_manager.py` | `amms_task_manager` | Master Finite State Machine (FSM) coordinating navigation, docking, perception, and manipulation. |
-| `moveit_pick_place_commander.py` | `moveit_pick_place_commander` | MoveIt 2 motion planning client for arm trajectories, collision scene management, and gripper control. |
-| `pick_place_commander.py` | `pick_place_commander` | Analytical IK fallback manipulation commander. |
-| `gazebo_observer.py` | *(Library)* | Gazebo Sim ground-truth pose listener; enforces pre-release lateral alignment and post-release support verification. |
-| `station_docking.py` | *(Library)* | Specialized docking controller for two-stage approach and camera-assisted purple table alignment. |
-| `object_detector.py` | `object_detector` | OpenCV RGB-D color segmentation and 3D centroid estimator. |
-| `ik.py` | *(Library)* | Pure Python analytical inverse kinematics solver for the 5-DOF arm. |
-| `readiness_gate.py` | `readiness_gate` | Startup synchronization barrier checking topics, actions, transforms, and Nav2 lifecycle nodes. |
-| `cloud_to_scan.py` | `cloud_to_scan` | Converts 3D PointCloud2 from depth camera to 2D LaserScan for Nav2 obstacle avoidance with self-filter. |
-| `waypoint_manager.py` | `waypoint_manager` | Visualizes navigation waypoints and station markers in RViz2. |
-| `amms_command.py` | `amms_command` | Interactive CLI menu for commanding Missions A, B, C, or D. |
+| A | `cube_red` | `placing_platform_red` |
+| B | `cube_green` | `placing_platform_green` |
+| C | `cube_blue` | `placing_platform_blue` |
+| D | Place-only station demonstration | Placement station |
 
-#### Configuration Files (`config/`)
-- `amms_waypoints.yaml`: Map coordinates for all pickup stations, docking waypoints, arrival tolerances, and backup distances.
-- `moveit_nav_pick_place.yaml`: MoveIt planning parameters, table collision boxes, platform offsets, and grasp/release tolerances.
-- `nav2_amms.yaml`: Nav2 stack configuration (DWB local planner, AMCL particle filter, global & local costmaps).
-- `ekf_odom.yaml`: Extended Kalman Filter parameters fusing wheel odometry (`/diff_cont/odom`) and IMU (`/imu`).
-- `pointcloud_to_laserscan.yaml`: Height filtering and angular bounds for synthetic laser scan generation.
+### Nominal placement geometry
 
----
+| Platform | World XY centre (m) | Top Z (m) |
+|---|---|---|
+| Red | `(-0.080, -2.640)` | `0.115` |
+| Green | `(0.000, -2.640)` | `0.115` |
+| Blue | `(0.080, -2.640)` | `0.115` |
 
-### 3.2 `articubot_one_with_arm`
+Each coloured platform is nominally **60 × 60 mm**; the target cubes are **25 mm** wide. A correctly supported upright cube has a nominal centre height of **0.1275 m**. These are world-model values, not substitutes for observed poses during a mission.
 
-**Type**: CMake package (`ament_cmake`), registered in ROS as `articubot_one`  
-**Role**: Complete robot description (URDF/Xacro), Gazebo simulation world, ros2_control configuration, and ROS-Gazebo bridge.
+## Autonomous mission sequence
 
-#### Key Subdirectories & Files
-- `description/four_wheel.xacro`: Main robot URDF entry point. Combines differential drive mobile chassis, sensors, and arm mount.
-- `description/arm.xacro`: 5-DOF manipulator links, joints, inertias, and limits.
-- `description/gripper.xacro`: Parallel jaw gripper with two prismatic fingers (`finger_travel = 0.0394875 m`).
-- `description/arm_ros2_control.xacro`: `ign_ros2_control` hardware interface configuration.
-- `worlds/og.world`: Ignition Gazebo world containing the robotics arena, 3 pickup tables, cubes, and placing station.
-- `config/my_controllers.yaml`: `ros2_control` controller definitions:
-  - `diff_cont` (`diff_drive_controller/DiffDriveController`)
-  - `joint_broad` (`joint_state_broadcaster/JointStateBroadcaster`)
-  - `arm_position_controller` (`joint_trajectory_controller/JointTrajectoryController`)
-  - `gripper_position_controller` (`forward_command_controller/ForwardCommandController`)
-- `config/gz_bridge.yaml`: Parameter mapping between Ignition Gazebo transport and ROS 2 topics.
-
----
-
-### 3.3 `k12_moveit_config`
-
-**Type**: CMake package (`ament_cmake`)  
-**Role**: MoveIt 2 configuration package generated and customized for the K12 arm.
-
-- `config/k12.srdf`: Semantic Robot Description Format. Defines the `arm` planning group (`arm_base_yaw_joint` through `arm_wrist_roll_joint`), `gripper` end-effector group, and disables self-collision checking for adjacent links.
-- `config/ompl_planning.yaml`: OMPL motion planner configurations (RRTConnect, RRT*, PRM*, etc.).
-- `config/kinematics.yaml`: Kinematic solver plugin configuration (`kdl_kinematics_plugin/KDLKinematicsPlugin` with `position_only_ik: true`).
-- `config/joint_limits.yaml`: Velocity and acceleration limits for trajectory generation.
-- `config/controllers.yaml`: Connects MoveIt 2 to the `/arm_position_controller/follow_joint_trajectory` action server.
-
----
-
-### 3.4 `robot_arm_description`
-
-**Type**: CMake package (`ament_cmake`)  
-**Role**: Standalone description and kinematic verification tools for the 5-DOF robotic arm.
-- Contains high-resolution STL meshes (`base.stl`, `shoulder.stl`, `upper_arm.stl`, `fore_arm.stl`, `wrist.stl`).
-- Provides offline inspection tools:
-  - `tools/analyze_meshes.py`: Computes center of mass, bounding boxes, and inertias directly from STL geometry.
-  - `tools/verify_kinematics.py`: Validates URDF joint transformations and workspace limits without launching ROS.
-
----
-
-### 3.5 `ROSArduinoBridge_BTS7960`
-
-**Type**: Embedded Arduino Firmware  
-**Role**: Real-robot hardware control for the differential drive base.
-- Implements closed-loop PID velocity control using dual BTS7960 43A High-Power H-bridge motor drivers.
-- Reads quadrature optical encoders for real-time wheel odometry.
-- Communicates with the onboard ROS computer via serial commands (`commands.h`, `diff_controller.h`).
-
----
-
-## 4. Simulation Environment (`og.world`)
-
-The simulation takes place inside `robotics_arena` ($9.0\text{ m} \times 6.0\text{ m}$ bounded arena):
-
-```
- Y (meters)
- ▲
- │   [-3.0, 2.75]              [0.0, 2.75]              [3.0, 2.75]
- │   ┌──────────┐              ┌──────────┐             ┌──────────┐
- │   │ Pickup 1 │              │ Pickup 2 │             │ Pickup 3 │
- │   │ (Red)    │              │ (Green)  │             │ (Blue)   │
- │   └──────────┘              └──────────┘             └──────────┘
- │
- │                             (0.0, 0.0)
- │                             [  Home  ]
- │
- │                             [0.0, -1.90] Staging Approach
- │                                  │
- │                                  ▼
- │                             [0.0, -2.25] Docked Position
- │                       ┌─────────────────────┐
- │                       │   Placing Station   │
- │                       │ [Red] [Grn] [Blue]  │
- │                       └─────────────────────┘
- └─────────────────────────────────────────────────────────────────► X (meters)
+```text
+Start / select mission
+        |
+Navigate to pickup station (Nav2)
+        |
+Detect target object (RGB-D colour detection)
+        |
+Compute grasp and plan arm motion (MoveIt 2)
+        |
+Approach -> close gripper -> lift
+        |
+Move arm to carry posture
+        |
+Navigate to purple placement station
+        |
+Dock / align at placing station
+        |
+Identify matching coloured platform
+        |
+Plan placement -> descend -> release
+        |
+Verify support and stability -> retreat
+        |
+Report verified result / failure / unverified state
 ```
 
-### Exact Coordinates & Dimensions
+**Important:** mission completion must be based on observed physical support, not simply a successful gripper-open command. The placement verification and docking logic are areas of active testing.
 
-#### 1. Pickup Stations (Tables: $0.30 \times 0.30 \times 0.10\text{ m}$, Top $Z = 0.10\text{ m}$)
-| Station | Table World Pose $(x, y, z)$ | Target Object | Object Starting Pose $(x, y, z)$ | Nav Waypoint $(x, y, \theta)$ |
-|---|---|---|---|---|
-| **Pickup 1 (Red)** | `(-3.00, 2.75, 0.05)` | `cube_red` ($25\text{ mm}$ cube) | `(-3.00, 2.75, 0.1125)` | `(-3.00, 1.95, +1.5708)` |
-| **Pickup 2 (Green)** | `(0.00, 2.75, 0.05)` | `cube_green` ($25\text{ mm}$ cube) | `(0.00, 2.75, 0.1125)` | `(0.00, 1.95, +1.5708)` |
-| **Pickup 3 (Blue)** | `(3.00, 2.75, 0.05)` | `cube_blue` ($25\text{ mm}$ cube) | `(3.00, 2.75, 0.1125)` | `(3.00, 1.95, +1.5708)` |
+## Repository structure
 
-#### 2. Placing Station (Purple Table & Elevated Platforms)
-- **Base Table**: Purple table at `(0.00, -2.75, 0.05)`, size $0.30 \times 0.30 \times 0.10\text{ m}$ (surface at $Z = 0.10\text{ m}$).
-- **Elevated Platforms**: Three colored platforms ($0.06 \times 0.06 \times 0.015\text{ m}$, top surface at $Z = 0.115\text{ m}$):
-  - **Red Platform**: Center at `(-0.080, -2.640, 0.1075)`, Top $Z = 0.115\text{ m}$
-  - **Green Platform**: Center at `(0.000, -2.640, 0.1075)`, Top $Z = 0.115\text{ m}$
-  - **Blue Platform**: Center at `(+0.080, -2.640, 0.1075)`, Top $Z = 0.115\text{ m}$
-- **Cube Settled Position**: When a $25\text{ mm}$ cube ($0.025\text{ m}$) rests flat on any platform, its center is at:
-  $$Z_{\text{settled}} = 0.115 + \frac{0.025}{2} = 0.1275\text{ m}$$
-
----
-
-## 5. Autonomous Missions & Operator CLI
-
-The system supports four distinct automated missions:
-
-```
-Mission A: Pick RED Cube    ──► Carry ──► Place on RED Platform   ──► Return Home
-Mission B: Pick GREEN Cube  ──► Carry ──► Place on GREEN Platform ──► Return Home
-Mission C: Pick BLUE Cube   ──► Carry ──► Place on BLUE Platform  ──► Return Home
-Mission D: Place-Only Demo  ──► Direct approach to Placing Station
+```text
+src/
+├── articubot_one_with_arm/     # Robot Xacro/URDF, Gazebo world, controllers and bridge
+├── k12_pick_place/             # Mission state machine, perception, docking and manipulation
+├── k12_moveit_config/          # SRDF, OMPL, kinematics and MoveIt controllers
+├── robot_arm_description/      # Arm meshes and geometry/kinematics tools
+└── ROSArduinoBridge_BTS7960/   # Embedded firmware for the physical mobile base
 ```
 
-### Triggering via Interactive CLI
-Run the AMMS Operator CLI in a separate terminal:
+### Key software components
+
+| Component | Responsibility |
+|---|---|
+| `amms_task_manager.py` | Orchestrates navigation, perception, picking, placing, and mission states |
+| `moveit_pick_place_commander.py` | Executes planned arm/gripper actions and handles placement logic |
+| `object_detector.py` | Performs colour-based object detection and position estimation |
+| `gazebo_observer.py` | Observes simulator entity poses for physical placement checks |
+| `station_docking.py` | Supports final station approach and alignment |
+| `ik.py` | Analytical inverse-kinematics utilities |
+| `readiness_gate.py` | Checks system readiness before mission execution |
+| `amms_command.py` | Provides interactive mission selection |
+
+## Getting started
+
+### Prerequisites
+
+- Ubuntu **22.04** with **ROS 2 Humble**.
+- Gazebo Sim / Ignition Gazebo **Fortress**, plus the appropriate ROS–Gazebo bridge and control packages.
+- **MoveIt 2**, **Nav2**, `ros2_control`, `robot_localization`, `colcon`, and the Python dependencies used by the workspace.
+
+> This project includes workspace-specific ROS/Gazebo packages. Review package manifests and launch files for the exact dependencies; it is not yet packaged as a one-command universal installer.
+
+### 1. Clone and build
+
 ```bash
-ros2 run k12_pick_place amms_command
-```
-The CLI provides an interactive prompt displaying live robot coordinates and FSM state:
-```
-============================================================
-              AMMS OPERATOR COMMAND INTERFACE
-============================================================
-  A  ->  Mission A : Pick Point 1 - RED   -> Place Red Platform
-  B  ->  Mission B : Pick Point 2 - GREEN -> Place Green Platform
-  C  ->  Mission C : Pick Point 3 - BLUE  -> Place Blue Platform
-  D  ->  Mission D : Place Station (Place-only sequence)
-  Q  ->  Quit CLI
-============================================================
-Current State: WAIT_FOR_COMMAND | Robot Pose: (0.00, 0.00, 0.00)
-Enter command [A/B/C/D/Q]: 
-```
+git clone https://github.com/naban559/pharmacy_assistant_robot.git
+cd pharmacy_assistant_robot
 
-### Triggering via ROS 2 Services
-You can also trigger missions directly using ROS 2 standard Trigger service calls:
-```bash
-ros2 service call /amms/goto_a std_srvs/srv/Trigger "{}" # Mission A (Red)
-ros2 service call /amms/goto_b std_srvs/srv/Trigger "{}" # Mission B (Green)
-ros2 service call /amms/goto_c std_srvs/srv/Trigger "{}" # Mission C (Blue)
-ros2 service call /amms/goto_d std_srvs/srv/Trigger "{}" # Mission D (Place only)
-```
-
----
-
-## 6. Manipulation, MoveIt 2 & Physical Verification
-
-Manipulation is managed by `moveit_pick_place_commander.py` collaborating with MoveIt 2's `move_group`.
-
-```
-  Task Manager (FSM)
-         │  /amms/pick_object or /amms/place_object
-         ▼
-  MoveItPickPlaceCommander
-   ├── 1. Read Gazebo ground-truth & camera detection
-   ├── 2. Add Planning Scene Obstacles (tables, platforms, arena walls)
-   ├── 3. Plan collision-free trajectory via MoveIt 2 (OMPL RRTConnect)
-   ├── 4. Execute via /arm_position_controller/follow_joint_trajectory
-   ├── 5. Actuate parallel gripper (/gripper_position_controller/commands)
-   └── 6. Verify physical settlement via GazeboObserver
-```
-
-### Collision Geometry & Planning Scene
-MoveIt dynamically maintains accurate collision models so the arm never strikes the table edges:
-- `pickup_tables`: $0.30 \times 0.30 \times 0.10\text{ m}$ at each pickup station.
-- `placing_station`: $0.30 \times 0.30 \times 0.10\text{ m}$ purple base table.
-- `platforms`: Three $0.06 \times 0.06 \times 0.015\text{ m}$ elevated platforms at $Z=0.1075\text{ m}$.
-- `arena_walls`: Outer boundary walls preventing out-of-workspace maneuvers.
-
-### Closed-Loop Physical Verification (`gazebo_observer.py`)
-To prevent "ghost placements" where the robot opens the gripper in mid-air or drops the cube outside the platform, the system enforces two verification gates:
-
-1. **Pre-Release Containment Gate**:
-   - Compares the cube's live pose against the target platform center before opening the gripper.
-   - Requires horizontal error $\le 14.5\text{ mm}$ (guaranteeing the $25\text{ mm}$ cube footprint is fully supported by the $60\text{ mm}$ platform).
-   - Requires vertical release gap $\le 5\text{ mm}$ above the platform surface.
-   - If a minor base docking error exists, the manipulator performs an online IK offset adjustment to center the cube exactly over the platform.
-
-2. **Post-Release Settlement Gate**:
-   - Waits for physics contact and settlement ($0.6\text{ s}$).
-   - Verifies the cube is physically supported:
-     $$|Z_{\text{cube\_bottom}} - Z_{\text{platform\_top}}| \le 3.0\text{ mm}$$
-   - Confirms linear velocity $< 10\text{ mm/s}$ (no residual bounce or slide).
-   - Only when verified does the arm retreat upwards and backwards to carry pose.
-
----
-
-## 7. Navigation & Precise Docking Architecture
-
-Navigating a mobile manipulator to a pickup/placing table requires millimeter-level heading and standoff precision.
-
-```
-       [ Stage 1: Global Navigation ]
-         Navigate to place_station_approach (0.00, -1.90, -1.57)
-         AMCL + DWB Planner (tolerant of obstacles)
-                      │
-                      ▼
-       [ Stage 2: In-Place Heading Alignment ]
-         Rotate purely in-place until yaw == -1.5708 rad (tolerance 0.03 rad)
-                      │
-                      ▼
-       [ Stage 3: Straight-Line Forward Docking ]
-         Drive straight 35 cm forward to place_station (0.00, -2.25)
-         Tolerances: XY <= 0.035 m, Yaw <= 0.03 rad
-                      │
-                      ▼
-       [ Stage 4: Station Docking Verification ]
-         Confirm visual contact with purple table before calling /amms/place_object
-```
-
-### Staging Waypoint Parameters
-```yaml
-waypoint_place_station_approach: [0.0, -1.90, -1.570796] # 35 cm pre-dock staging
-waypoint_place_station:          [0.0, -2.25, -1.570796] # Final placing stance
-docking_arrival_xy_tolerance_m:   0.035                  # Strict XY arrival gate
-docking_arrival_yaw_tolerance_rad: 0.03                  # Strict yaw arrival gate
-```
-
----
-
-## 8. System Interconnection & Data Flow
-
-### 8.1 Launch Tree Hierarchy
-```
-amms_moveit_nav_pick_place.launch.py (Convenience Entry Point)
- └── amms_nav_pick_place.launch.py (Master Launch Description)
-      ├── amms_navigation.launch.py
-      │    ├── amms_gazebo.launch.py (articubot_one)
-      │    │    ├── rsp.launch.py (robot_state_publisher)
-      │    │    ├── Ignition Gazebo Sim (og.world)
-      │    │    ├── ros_gz_bridge (gz_bridge.yaml)
-      │    │    └── controller_manager (my_controllers.yaml)
-      │    ├── cloud_to_scan (pointcloud_to_laserscan.yaml)
-      │    ├── ekf_node (ekf_odom.yaml)
-      │    ├── localization_launch.py (Nav2 AMCL)
-      │    ├── navigation_launch.py (Nav2 DWB / BT Navigator)
-      │    ├── waypoint_manager (amms_waypoints.yaml)
-      │    └── rviz2 (amms_nav_pick_place.rviz)
-      ├── object_detector (pick_place_service.yaml)
-      ├── move_group node (MoveIt 2 OMPL / KDL / SRDF)
-      ├── moveit_pick_place_commander (moveit_nav_pick_place.yaml)
-      ├── readiness_gate (synchronization barrier)
-      └── amms_task_manager (amms_waypoints.yaml)
-```
-
-### 8.2 ROS 2 Topic and Service Map
-```
-Ignition Gazebo (og.world)
-  │ (ros_gz_bridge)
-  ├── /scan                     ──► Nav2 Costmaps & Task Manager
-  ├── /imu                      ──► robot_localization EKF
-  ├── /diff_cont/odom           ──► robot_localization EKF ──► /odometry/filtered
-  ├── /camera/depth_camera/...  ──► object_detector ──► /amms/detections
-  ├── /joint_states             ──► MoveIt move_group & Commanders
-  └── /gazebo/pose_info         ──► gazebo_observer (ground truth)
-
-amms_task_manager
-  ├── [Action] navigate_to_pose ──► Nav2 bt_navigator ──► /cmd_vel
-  ├── [Action] backup           ──► Nav2 behavior_server ──► /cmd_vel
-  ├── [Service] /amms/pick_object  ──► moveit_pick_place_commander
-  ├── [Service] /amms/place_object ──► moveit_pick_place_commander
-  ├── [Service] /amms/fold_arm     ──► moveit_pick_place_commander
-  └── [Pub]     /amms/task_state   ──► amms_command CLI & RViz
-
-moveit_pick_place_commander
-  ├── [Action] /arm_position_controller/follow_joint_trajectory ──► ros2_control
-  ├── [Pub]    /gripper_position_controller/commands            ──► ros2_control
-  └── [MoveIt] Planning Scene Updates & OMPL Motion Planning
-```
-
----
-
-## 9. How to Build and Run
-
-### 9.1 Build the Workspace
-Always build from `/home/nabhan/try_18`:
-```bash
-cd /home/nabhan/try_18
 source /opt/ros/humble/setup.bash
-
-# Build all packages with symlink install:
 colcon build --symlink-install
-
-# Source overlay:
 source install/setup.bash
 ```
 
-### 9.2 Launch the Primary Autonomous System
-Run the complete simulation stack (Gazebo + Navigation + MoveIt + Task Manager):
+If dependency resolution is needed, install/configure ROS dependencies for your Ubuntu/ROS distribution before rebuilding.
+
+### 2. Launch the autonomous simulation
+
 ```bash
 source /opt/ros/humble/setup.bash
-source /home/nabhan/try_18/install/setup.bash
+source install/setup.bash
 export ROS_DOMAIN_ID=77
 
 ros2 launch k12_pick_place amms_moveit_nav_pick_place.launch.py
 ```
 
-### 9.3 Command a Mission (Operator CLI)
-Open a second terminal, source the overlay, set domain, and run:
+### 3. Run the operator interface
+
+In a **second terminal**, from the workspace root:
+
 ```bash
 source /opt/ros/humble/setup.bash
-source /home/nabhan/try_18/install/setup.bash
+source install/setup.bash
 export ROS_DOMAIN_ID=77
 
 ros2 run k12_pick_place amms_command
 ```
-Press `A`, `B`, `C`, or `D` and hit Enter.
 
-### 9.4 Running Automated Verification Tests
-The repository includes a comprehensive unit and integration test suite:
+Choose **A**, **B**, **C**, or **D** to run the corresponding mission.
+
+Alternatively, trigger a mission directly:
+
 ```bash
-cd /home/nabhan/try_18
-pytest src/k12_pick_place/test/ -v
+ros2 service call /amms/goto_a std_srvs/srv/Trigger "{}"
+ros2 service call /amms/goto_b std_srvs/srv/Trigger "{}"
+ros2 service call /amms/goto_c std_srvs/srv/Trigger "{}"
 ```
+
+> **Domain ID:** `77` is the documented local default; use a different ID consistently across terminals when running isolated tests or sharing a network with other ROS systems.
+
+## Configuration
+
+| Configuration file | Purpose |
+|---|---|
+| `src/k12_pick_place/config/amms_waypoints.yaml` | Pickup and placing waypoints, docking and arrival tolerances |
+| `src/k12_pick_place/config/nav2_amms.yaml` | Navigation controller, planners, localization and costmaps |
+| `src/k12_pick_place/config/moveit_nav_pick_place.yaml` | Arm planning, grasp/place parameters, collision and release settings |
+| `src/k12_pick_place/config/ekf_odom.yaml` | Wheel-odometry and IMU fusion |
+| `src/articubot_one_with_arm/config/my_controllers.yaml` | Base, arm and gripper controllers |
+| `src/articubot_one_with_arm/config/gz_bridge.yaml` | ROS–Gazebo message bridging |
+
+Adjust station and placement parameters only after checking the active world geometry, robot frames, and controller feedback.
+
+## Testing and validation
+
+The repository includes Python tests and mission-validation tooling. From a properly configured workspace:
+
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+python3 -m pytest src/k12_pick_place/test/ -v
+```
+
+For a complete simulation run, inspect the validation runner in `validation/run_mission_test.py` and ensure required simulator/ROS services are available. **Unit tests and successful launch do not by themselves prove a cube landed on the correct platform.**
+
+The placement validation target is to measure real simulator state throughout pickup, docking, pre-release alignment, release, settling and retreat. Success should require matching colour/platform identity, footprint containment, acceptable cube/platform height difference, and sustained stability after release.
+
+### Areas under active refinement
+
+- Reliable, repeatable platform-centre localization for all colours.
+- Closed-loop alignment of the **held object**, rather than the arm TCP alone.
+- Consistent final docking without repeated heading correction.
+- Pre-release and post-retreat physical verification.
+- End-to-end success rates across varied starting poses.
+
+## Development history
+
+The current `try_18` development iteration introduces a more realistic **5-DOF articulated arm**, MoveIt 2 integration, colour-based perception, and an expanded placement workflow, building upon earlier mobile robot and manipulation prototypes.
+
+## Maintainer
+
+**Sayyid Muhammad Nabhan**  
+GitHub: [@naban559](https://github.com/naban559)
 
 ---
 
-## 10. Tuning & Configuration Reference
+<div align="center">
 
-### Mobile Base Speeds (`config/nav2_amms.yaml`)
-To adjust navigation velocity and acceleration:
-```yaml
-FollowPath:                     # DWB local planner
-  max_vel_x: 0.25               # Forward speed (m/s)
-  max_vel_theta: 0.50           # Angular speed (rad/s)
-  acc_lim_x: 0.35               # Linear acceleration (m/s²)
-  acc_lim_theta: 0.75           # Angular acceleration (rad/s²)
-```
+**ROS 2 · Autonomous Navigation · Robot Manipulation · Computer Vision**
 
-### Arm Planning & Speed (`config/moveit_nav_pick_place.yaml`)
-To adjust MoveIt velocity scaling and planning attempts:
-```yaml
-moveit_pick_place_commander:
-  ros__parameters:
-    move_group_velocity_scale: 0.5        # 0.1 to 1.0 (50% speed)
-    move_group_acceleration_scale: 0.5    # 0.1 to 1.0 (50% accel)
-    move_group_planning_time: 10.0        # Max planning budget (sec)
-    move_group_num_planning_attempts: 10  # OMPL sample attempts
-```
+*From perception and motion planning to coordinated autonomous pick-and-place.*
 
-### Gripper Stroke Hardware Limits (`description/gripper.xacro`)
-> [!CAUTION]
-> The physical prismatic joint limit in `gripper.xacro` is `0.0394875 m`. Never set `open_gripper_width` higher than this value in configuration files:
-> - `open_gripper_width: 0.0115` (Sufficient for $25\text{ mm}$ cube)
-> - `closed_gripper_width: 0.000` (Fully closed on target)
-
-### Docking & Standoff Tolerances (`config/amms_waypoints.yaml`)
-```yaml
-amms_task_manager:
-  ros__parameters:
-    docking_arrival_xy_tolerance_m: 0.035    # Strict final translation tolerance
-    docking_arrival_yaw_tolerance_rad: 0.03  # Strict final orientation tolerance
-    post_pick_backup_distance: 0.50          # Reversing distance after grasp
-    post_place_backup_distance: 0.35         # Reversing distance after placement
-```
+</div>
