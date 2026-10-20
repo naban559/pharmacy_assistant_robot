@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!-- Gazebo-side plugin that loads controller_manager (ros2_control) inside the simulator. -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="link_contact" params="link">
+    <gazebo reference="${link}">
+      <mu1>0.8</mu1>
+      <mu2>0.8</mu2>
+    </gazebo>
+  </xacro:macro>
+
+  <xacro:macro name="arm_gazebo_plugin" params="sim_backend controllers_file">
+    <gazebo>
+      <xacro:if value="${sim_backend == 'gz'}">
+        <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+          <parameters>${controllers_file}</parameters>
+        </plugin>
+      </xacro:if>
+      <xacro:unless value="${sim_backend == 'gz'}">
+        <plugin filename="ign_ros2_control-system" name="ign_ros2_control::IgnitionROS2ControlPlugin">
+          <parameters>${controllers_file}</parameters>
+        </plugin>
+      </xacro:unless>
+    </gazebo>
+
+    <xacro:link_contact link="base_link"/>
+    <xacro:link_contact link="shoulder_link"/>
+    <xacro:link_contact link="upper_arm_link"/>
+    <xacro:link_contact link="forearm_link"/>
+    <xacro:link_contact link="wrist_link"/>
+  </xacro:macro>
+
+</robot>

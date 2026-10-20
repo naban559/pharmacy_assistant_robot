@@ -1,0 +1,260 @@
+<?xml version="1.0"?>
+<!--
+  robot_arm  —  4-DOF hobby-servo arm (base yaw, shoulder, elbow, wrist pitch)
+  Gripper is intentionally NOT modelled yet.  wrist_link is the last link.
+
+  Units: metres / kg / rad.  STL meshes are in millimetres  ->  scale 0.001.
+
+  Frame conventions (all at q = 0):
+    base_link       : origin on the ground under the turntable axis, +Z up,
+                      +X points from the electronics box toward the arm's "front".
+    shoulder_link   : origin at the centre of the TOP face of the turntable disc.
+    upper_arm_link  : origin on the shoulder-servo shaft; +Z runs along the line
+                      shoulder-shaft -> elbow-shaft (arm points straight up at q=0).
+    forearm_link    : origin on the elbow shaft; +X runs along the forearm toward the wrist
+                      (forearm horizontal, pointing forward at q=0).
+    wrist_link      : origin on the wrist hinge pin; +X continues along the forearm at q=0.
+  All three pitch joints rotate about +Y of their frame.  +q about +Y tips the +X/+Z axis
+  "forward and down"  (a vector along +Z moves toward +X; a vector along +X moves toward -Z).
+
+  Every number marked  [STL]  was measured from the mesh,  [PHOTO] was inferred from photos,
+  [ASSUMED] is a placeholder that must be replaced.  See docs/MODEL_NOTES.md.
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="robot_arm">
+
+  <!-- ===================== arguments ===================== -->
+  <!-- ignition = ROS 2 Humble + Ignition Fortress (ign_ros2_control)
+       gz       = ROS 2 Jazzy  + Gazebo Harmonic  (gz_ros2_control)                       -->
+  <xacro:arg name="sim_backend"      default="ignition"/>
+  <xacro:arg name="use_ros2_control" default="true"/>
+  <xacro:arg name="debug_colors"     default="true"/>
+  <xacro:arg name="controllers_file" default="$(find robot_arm_description)/config/controllers.yaml"/>
+
+  <xacro:include filename="$(find robot_arm_description)/urdf/robot.ros2_control.xacro"/>
+  <xacro:include filename="$(find robot_arm_description)/urdf/robot.gazebo.xacro"/>
+
+  <!-- ===================== constants ===================== -->
+  <xacro:property name="mm"         value="0.001"/>
+  <xacro:property name="mesh_dir"   value="package://robot_arm_description/meshes"/>
+  <xacro:property name="mesh_scale" value="0.001 0.001 0.001"/>   <!-- [STL] bbox sizes 43..241 -> mm -->
+
+  <!-- joint geometry (mesh-space numbers in mm, converted to m) -->
+  <!-- BASE -> SHOULDER (yaw).  [STL] base rim top z=70, shoulder disc is 10 thick (z -10..0) and sits on the rim.
+       Axis = cylinder axis of the base ring / shoulder disc (x=y=0).                                            -->
+  <xacro:property name="pan_z"            value="${80.0*mm}"/>
+
+  <!-- SHOULDER -> UPPER ARM (pitch).  [STL] servo window centre z=30; servo pocket 40x20, tab holes 49.5 apart
+       (MG996R-class servo).  Shaft x = window left edge + ~10 mm.  *** VERIFY x (alternative: 29.7) ***        -->
+  <xacro:property name="shoulder_axis_x"  value="${9.8*mm}"/>
+  <xacro:property name="shoulder_axis_z"  value="${30.0*mm}"/>
+
+  <!-- UPPER ARM mesh: shoulder hole (0,-100) and elbow hole (47.5, 94.28) in mesh coords [STL] -->
+  <xacro:property name="ua_pivot_x"       value="${0.0*mm}"/>
+  <xacro:property name="ua_pivot_z"       value="${-100.0*mm}"/>
+  <xacro:property name="ua_elbow_x"       value="${47.5*mm}"/>
+  <xacro:property name="ua_elbow_z"       value="${94.28*mm}"/>
+  <!-- tilt of the pivot->elbow line from mesh +Z (13.7 deg).  Rotating the mesh by -tilt makes link +Z the arm line -->
+  <xacro:property name="ua_tilt"          value="${atan2(ua_elbow_x-ua_pivot_x, ua_elbow_z-ua_pivot_z)}"/>
+  <xacro:property name="upper_arm_length" value="${sqrt((ua_elbow_x-ua_pivot_x)**2+(ua_elbow_z-ua_pivot_z)**2)}"/> <!-- 0.200 -->
+
+  <!-- FOREARM: elbow hole at mesh origin, wrist-pin hole at mesh x=-140 [STL].  Mesh is flipped 180 deg about Z
+       so the forearm points along +X.                                                                        -->
+  <xacro:property name="forearm_length"   value="${140.0*mm}"/>
+
+  <!-- WRIST: hinge-pin hole axis is mesh X at (y=7.5, z=0) [STL]; the mesh is turned +90 deg about Z so that
+       pin axis = link Y, and the pin sits on the link origin.                                                 -->
+  <xacro:property name="wrist_pin_y"      value="${7.5*mm}"/>
+
+  <!-- joint limits -->
+  <!-- pan: no geometric stop, servo range assumed +-90 deg        [ASSUMED]
+       lift/elbow/wrist: contiguous mesh-collision-free window around q=0 minus 3 deg margin  [STL, see docs] -->
+  <xacro:property name="pan_lo"    value="${radians(-90)}"/>
+  <xacro:property name="pan_hi"    value="${radians( 90)}"/>
+  <xacro:property name="lift_lo"   value="${radians(-78)}"/>
+  <xacro:property name="lift_hi"   value="${radians(106)}"/>
+  <xacro:property name="elbow_lo"  value="${radians(-138)}"/>
+  <xacro:property name="elbow_hi"  value="${radians( 77)}"/>
+  <xacro:property name="wrist_lo"  value="${radians(-102)}"/>
+  <xacro:property name="wrist_hi"  value="${radians( 102)}"/>
+
+  <!-- actuator placeholders [ASSUMED]  (typical hobby-servo stall torque / speed) -->
+  <xacro:property name="pan_effort"   value="1.0"/>   <!-- N*m  ~ one MG996R -->
+  <xacro:property name="lift_effort"  value="2.0"/>   <!-- N*m  two servos, one per ear -->
+  <xacro:property name="elbow_effort" value="1.0"/>
+  <xacro:property name="wrist_effort" value="0.2"/>   <!-- N*m  ~ SG90 -->
+  <xacro:property name="joint_speed"  value="3.0"/>   <!-- rad/s -->
+  <xacro:property name="joint_damping"  value="0.05"/>
+  <xacro:property name="joint_friction" value="0.02"/>
+
+  <!-- masses [ASSUMED PLACEHOLDERS - replace with weighed values]
+       Solid-PLA upper bounds from mesh volume (1240 kg/m3): base 0.185, shoulder 0.196, upper_arm 0.384,
+       forearm 0.133, wrist 0.024 kg.  Values below = plausible printed mass + servos inside/on the link. -->
+  <xacro:property name="base_mass"      value="1.00"/>
+  <xacro:property name="shoulder_mass"  value="0.30"/>
+  <xacro:property name="upper_arm_mass" value="0.25"/>
+  <xacro:property name="forearm_mass"   value="0.10"/>
+  <xacro:property name="wrist_mass"     value="0.03"/>
+
+  <!-- centre of mass [m, link frame] and inertia PER KG [m^2: ixx iyy izz ixy ixz iyz]
+       computed from the STL volumes assuming uniform density [STL].  Inertia = mass * these.  -->
+  <xacro:property name="base_com" value="-0.0568876 -0.000151026 0.0414031"/>
+  <xacro:property name="base_i" value="0.00274515 0.00536777 0.00712232 -5.5062e-06 0.000157223 3.21412e-07"/>
+  <xacro:property name="shoulder_com" value="0.00326334 4.30231e-08 0.00316603"/>
+  <xacro:property name="shoulder_i" value="0.00104644 0.00107327 0.00165751 -1.4246e-10 -9.36904e-05 1.02401e-10"/>
+  <xacro:property name="upper_arm_com" value="-0.0173272 -3.85431e-05 0.0978832"/>
+  <xacro:property name="upper_arm_i" value="0.00531897 0.00565327 0.000453664 6.67882e-07 0.000588872 3.93589e-06"/>
+  <xacro:property name="forearm_com" value="0.0554396 0.00135289 -1.35141e-10"/>
+  <xacro:property name="forearm_i" value="0.000277503 0.00194742 0.00202719 5.87049e-05 -9.47073e-11 -5.95801e-11"/>
+  <xacro:property name="wrist_com" value="0.012098 -0.00221546 -4.1261e-09"/>
+  <xacro:property name="wrist_i" value="0.000250781 0.000175866 0.000321848 -1.21679e-05 9.76777e-11 -1.59523e-11"/>
+
+  <!-- ===================== materials ===================== -->
+  <xacro:if value="$(arg debug_colors)">
+    <material name="mat_base">      <color rgba="0.50 0.52 0.55 1"/></material>
+    <material name="mat_shoulder">  <color rgba="0.90 0.45 0.10 1"/></material>
+    <material name="mat_upper_arm"> <color rgba="0.25 0.28 0.33 1"/></material>
+    <material name="mat_forearm">   <color rgba="0.15 0.42 0.78 1"/></material>
+    <material name="mat_wrist">     <color rgba="0.90 0.75 0.10 1"/></material>
+  </xacro:if>
+  <xacro:unless value="$(arg debug_colors)">
+    <material name="mat_base">      <color rgba="0.07 0.07 0.08 1"/></material>
+    <material name="mat_shoulder">  <color rgba="0.07 0.07 0.08 1"/></material>
+    <material name="mat_upper_arm"> <color rgba="0.07 0.07 0.08 1"/></material>
+    <material name="mat_forearm">   <color rgba="0.07 0.07 0.08 1"/></material>
+    <material name="mat_wrist">     <color rgba="0.07 0.07 0.08 1"/></material>
+  </xacro:unless>
+
+  <!-- ===================== macros ===================== -->
+  <!-- i = "ixx iyy izz ixy ixz iyz" per kg  ->  multiplied by the link mass -->
+  <xacro:macro name="mesh_inertial" params="mass com i">
+    <inertial>
+      <origin xyz="${com}" rpy="0 0 0"/>
+      <mass value="${mass}"/>
+      <inertia ixx="${mass*float(i.split()[0])}" iyy="${mass*float(i.split()[1])}" izz="${mass*float(i.split()[2])}"
+               ixy="${mass*float(i.split()[3])}" ixz="${mass*float(i.split()[4])}" iyz="${mass*float(i.split()[5])}"/>
+    </inertial>
+  </xacro:macro>
+
+  <!-- ===================== links & joints ===================== -->
+  <link name="world"/>
+  <joint name="world_to_base" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- base: mesh frame == link frame [STL: bbox x -150..60, y +-60, z 0..70] -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="${mesh_dir}/base.stl" scale="${mesh_scale}"/></geometry>
+      <material name="mat_base"/>
+    </visual>
+    <collision><origin xyz="0 0 0.035" rpy="0 0 0"/><geometry><cylinder radius="0.06" length="0.07"/></geometry></collision>
+    <collision><origin xyz="-0.1025 0 0.035" rpy="0 0 0"/><geometry><box size="0.095 0.12 0.07"/></geometry></collision>
+    <xacro:mesh_inertial mass="${base_mass}" com="${base_com}" i="${base_i}"/>
+  </link>
+
+  <!-- 1) BASE -> SHOULDER : turntable yaw about Z -->
+  <joint name="shoulder_pan_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="shoulder_link"/>
+    <origin xyz="0 0 ${pan_z}" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="${pan_lo}" upper="${pan_hi}" effort="${pan_effort}" velocity="${joint_speed}"/>
+    <dynamics damping="${joint_damping}" friction="${joint_friction}"/>
+  </joint>
+
+  <!-- shoulder: mesh frame == link frame [STL: disc r=60, z -10..0; ears to z=50] -->
+  <link name="shoulder_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="${mesh_dir}/shoulder.stl" scale="${mesh_scale}"/></geometry>
+      <material name="mat_shoulder"/>
+    </visual>
+    <collision><origin xyz="0 0 -0.005" rpy="0 0 0"/><geometry><cylinder radius="0.06" length="0.01"/></geometry></collision>
+    <collision><origin xyz="0.014 0.02495 0.025" rpy="0 0 0"/><geometry><box size="0.078 0.0089 0.05"/></geometry></collision>
+    <collision><origin xyz="0.014 -0.02495 0.025" rpy="0 0 0"/><geometry><box size="0.078 0.0089 0.05"/></geometry></collision>
+    <xacro:mesh_inertial mass="${shoulder_mass}" com="${shoulder_com}" i="${shoulder_i}"/>
+  </link>
+
+  <!-- 2) SHOULDER -> UPPER ARM : pitch about Y through the servo shaft -->
+  <joint name="shoulder_lift_joint" type="revolute">
+    <parent link="shoulder_link"/>
+    <child link="upper_arm_link"/>
+    <origin xyz="${shoulder_axis_x} 0 ${shoulder_axis_z}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="${lift_lo}" upper="${lift_hi}" effort="${lift_effort}" velocity="${joint_speed}"/>
+    <dynamics damping="${joint_damping}" friction="${joint_friction}"/>
+  </joint>
+
+  <!-- upper arm: visual = mesh rotated by -tilt about Y and shifted so mesh shoulder-hole lands on the link origin.
+       (translation = -Ry(-tilt) * pivot) -->
+  <link name="upper_arm_link">
+    <visual>
+      <origin xyz="${-(ua_pivot_x*cos(ua_tilt) - ua_pivot_z*sin(ua_tilt))} 0 ${-(ua_pivot_x*sin(ua_tilt) + ua_pivot_z*cos(ua_tilt))}"
+              rpy="0 ${-ua_tilt} 0"/>
+      <geometry><mesh filename="${mesh_dir}/upper_arm.stl" scale="${mesh_scale}"/></geometry>
+      <material name="mat_upper_arm"/>
+    </visual>
+    <collision><origin xyz="0 0 0" rpy="${pi/2} ${-ua_tilt} 0"/><geometry><cylinder radius="0.0275" length="0.03"/></geometry></collision>
+    <collision><origin xyz="-0.019 0 0.07771" rpy="0 ${-ua_tilt} 0"/><geometry><box size="0.044 0.03 0.16"/></geometry></collision>
+    <collision><origin xyz="-0.02229 0 0.19221" rpy="0 ${-ua_tilt} 0"/><geometry><box size="0.086 0.03 0.044"/></geometry></collision>
+    <xacro:mesh_inertial mass="${upper_arm_mass}" com="${upper_arm_com}" i="${upper_arm_i}"/>
+  </link>
+
+  <!-- 3) UPPER ARM -> FOREARM : elbow pitch about Y -->
+  <joint name="elbow_joint" type="revolute">
+    <parent link="upper_arm_link"/>
+    <child link="forearm_link"/>
+    <origin xyz="0 0 ${upper_arm_length}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="${elbow_lo}" upper="${elbow_hi}" effort="${elbow_effort}" velocity="${joint_speed}"/>
+    <dynamics damping="${joint_damping}" friction="${joint_friction}"/>
+  </joint>
+
+  <!-- forearm: mesh origin IS the elbow hole; mesh points toward -X, so flip 180 deg about Z -->
+  <link name="forearm_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 ${pi}"/>
+      <geometry><mesh filename="${mesh_dir}/fore_arm.stl" scale="${mesh_scale}"/></geometry>
+      <material name="mat_forearm"/>
+    </visual>
+    <collision><origin xyz="0.005 0.0216 0" rpy="0 0 0"/><geometry><box size="0.05 0.0128 0.04"/></geometry></collision>
+    <collision><origin xyz="0.005 -0.0216 0" rpy="0 0 0"/><geometry><box size="0.05 0.0128 0.04"/></geometry></collision>
+    <collision><origin xyz="0.0375 0 0" rpy="0 0 0"/><geometry><box size="0.015 0.056 0.038"/></geometry></collision>
+    <collision><origin xyz="0.09875 0 0" rpy="0 0 0"/><geometry><box size="0.1075 0.02 0.028"/></geometry></collision>
+    <xacro:mesh_inertial mass="${forearm_mass}" com="${forearm_com}" i="${forearm_i}"/>
+  </link>
+
+  <!-- 4) FOREARM -> WRIST : wrist pitch about Y through the hinge pin -->
+  <joint name="wrist_pitch_joint" type="revolute">
+    <parent link="forearm_link"/>
+    <child link="wrist_link"/>
+    <origin xyz="${forearm_length} 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="${wrist_lo}" upper="${wrist_hi}" effort="${wrist_effort}" velocity="${joint_speed}"/>
+    <dynamics damping="${joint_damping}" friction="${joint_friction}"/>
+  </joint>
+
+  <!-- wrist: mesh U-clevis opens toward mesh +Y.  Rz(+90deg) turns mesh +Y into link -X (toward the elbow) and mesh X
+       into link Y (pin axis).  Translation puts the pin centre (mesh y=7.5) on the link origin. -->
+  <link name="wrist_link">
+    <visual>
+      <origin xyz="${wrist_pin_y} 0 0" rpy="0 0 ${pi/2}"/>
+      <geometry><mesh filename="${mesh_dir}/wrist.stl" scale="${mesh_scale}"/></geometry>
+      <material name="mat_wrist"/>
+    </visual>
+    <collision><origin xyz="0.0225 0 0" rpy="0 0 0"/><geometry><box size="0.01 0.043 0.025"/></geometry></collision>
+    <collision><origin xyz="0.0025 0.016 0" rpy="0 0 0"/><geometry><box size="0.03 0.011 0.025"/></geometry></collision>
+    <collision><origin xyz="0.0025 -0.016 0" rpy="0 0 0"/><geometry><box size="0.03 0.011 0.025"/></geometry></collision>
+    <xacro:mesh_inertial mass="${wrist_mass}" com="${wrist_com}" i="${wrist_i}"/>
+  </link>
+
+  <!-- ===================== ros2_control + Gazebo ===================== -->
+  <xacro:if value="$(arg use_ros2_control)">
+    <xacro:arm_ros2_control sim_backend="$(arg sim_backend)"/>
+    <xacro:arm_gazebo_plugin sim_backend="$(arg sim_backend)" controllers_file="$(arg controllers_file)"/>
+  </xacro:if>
+
+</robot>

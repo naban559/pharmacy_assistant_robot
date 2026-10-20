@@ -1,0 +1,15 @@
+/**:
+  ros__parameters:
+    moveit_controller_manager: moveit_simple_controller_manager/MoveItSimpleControllerManager
+    controller_names:
+      - arm_position_controller
+    arm_position_controller:
+      type: FollowJointTrajectory
+      action_ns: follow_joint_trajectory
+      default: true
+      joints:
+        - arm_base_yaw_joint
+        - arm_shoulder_pitch_joint
+        - arm_elbow_pitch_joint
+        - arm_wrist_pitch_joint
+        - arm_wrist_roll_joint
